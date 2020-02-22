@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from celery.schedules import crontab
+from kombu import Queue
 
 from smart_bookmarks.authentication.settings import *  # noqa
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'smart_bookmarks.authentication',
+    'smart_bookmarks.scraper',
 ]
 
 MIDDLEWARE = [
@@ -77,10 +80,18 @@ WSGI_APPLICATION = 'smart_bookmarks.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    },
 }
 
 
@@ -121,3 +132,74 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'foo': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+}
+
+CELERY_BROKER_URL = 'pyamqp://{}:{}@{}:{}'.format(os.getenv('RABBITMQ_USER'), os.getenv('RABBITMQ_PASS'), os.getenv('RABBITMQ_HOST'), os.getenv('RABBITMQ_PORT'))
+CELERY_RESULT_BACKEND = 'rpc://' # 'redis://{}:{}'.format(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT'))
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULE = {
+    # 'test-task': {
+    #     'task': 'foo.tasks.foo.periodic_task',
+    #     'schedule': crontab()
+    # },
+    'web-driver-task': {
+        'task': 'smart_bookmarks.scraper.tasks.web_driver_task',
+        'schedule': crontab()
+    }
+}
+
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TASK_QUEUES = (
+    Queue('default', routing_key='task.#'),
+    Queue('priority', routing_key='priority.#')
+)
+CELERY_TASK_DEFAULT_EXCHANGE = 'tasks'
+CELERY_TASK_DEFAULT_EXCHANGE_TYPE = 'topic'
+CELERY_TASK_DEFAULT_ROUTING_KEY = 'task.default'
+
+CELERY_TASK_ROUTES = {
+    # 'foo.tasks.foo.periodic_task': {
+    #     # 'queue': 'default'
+    #     'routing_key': 'task.periodic'
+    # },
+    # 'foo.tasks.foo.simple_task': {
+    #     # 'queue': 'priority'
+    #     'routing_key': 'priority.simple'
+    # },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://{}:{}/1".format(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT')),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
+}
+
+CACHE_TTL = 20 * 1
