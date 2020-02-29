@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
+
 from celery.schedules import crontab
 from kombu import Queue
 
@@ -41,8 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'smart_bookmarks.bookmarks',
     'smart_bookmarks.authentication',
-    'smart_bookmarks.scraper',
+    'smart_bookmarks.scrapers',
 ]
 
 MIDDLEWARE = [
@@ -132,7 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
 LOGGING = {
     'version': 1,
@@ -165,9 +168,9 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'foo.tasks.foo.periodic_task',
     #     'schedule': crontab()
     # },
-    'web-driver-task': {
-        'task': 'smart_bookmarks.scraper.tasks.web_driver_task',
-        'schedule': crontab()
+    'scrape-pages-task': {
+        'task': 'smart_bookmarks.scrapers.tasks.scrape_pages',
+        'schedule': timedelta(seconds=20)
     }
 }
 
@@ -203,3 +206,5 @@ CACHES = {
 }
 
 CACHE_TTL = 20 * 1
+
+SCRAPER_SERVICE = 'smart_bookmarks.scrapers.services.ScraperService'

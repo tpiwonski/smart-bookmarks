@@ -1,0 +1,8 @@
+<div>
+    <div>{{ bookmark.id }}</div>
+    <div><a href="{% url 'show-bookmark' bookmark.guid %}">{{ bookmark.guid }}</a></div>
+    <div>{{ bookmark.url }}</div>
+    <div>{{ bookmark.created }}</div>
+    <div>{{ bookmark.updated }}</div>
+    <div>{{ bookmark.last_page.text }}</div>
+</div>
