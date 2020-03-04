@@ -1,18 +1,15 @@
 from django.db import models, transaction
 
 
-class ScrapePageTaskManager(models.Manager):
+class ScrapePageManager(models.Manager):
 
     @transaction.atomic
-    def tasks_to_process(self, limit=10):
-        tasks = (
+    def bookmarks_to_scrape(self, limit=10):
+        scrape_pages = (
             self.get_queryset().
             select_for_update().
-            filter(state=self.model.STATE_WAITING).
-            order_by('-created')[:limit])
+            order_by('created')[:limit])
 
-        for task in tasks:
-            task.state = self.model.STATE_PROCESSING
-
-        self.get_queryset().bulk_update(tasks, ['state'])
-        return tasks
+        bookmarks = [scrape_page.bookmark for scrape_page in scrape_pages]
+        self.get_queryset().filter(id__in=[scrape_page.id for scrape_page in scrape_pages]).delete()
+        return bookmarks

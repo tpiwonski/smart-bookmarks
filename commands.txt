@@ -3,7 +3,9 @@ docker system prune --volumes
 docker-compose build
 docker-compose up
 docker-compose start database
+docker-compose up -d database
 docker-compose exec database createdb -U dev smart-bookmarks-dev
+docker-compose exec database dropdb -U dev smart-bookmarks-dev
 docker-compose run --rm app /usr/bin/env python manage.py migrate
 docker-compose run --rm app /usr/bin/env python manage.py createsuperuser
 docker-compose logs -f
