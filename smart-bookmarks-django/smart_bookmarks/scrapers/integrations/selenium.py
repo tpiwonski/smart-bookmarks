@@ -5,11 +5,11 @@ from selenium.webdriver.chrome.options import Options
 
 class SeleniumScraperService:
 
-    def __init__(self, driver_path="/usr/bin/chromedriver"):
+    def __init__(self, chrome_driver_path):
         self._web_driver = None
         self._service = None
 
-        self._service = webdriver.chrome.service.Service(driver_path)
+        self._service = webdriver.chrome.service.Service(chrome_driver_path)
         self._service.start()
 
         chrome_options = Options()

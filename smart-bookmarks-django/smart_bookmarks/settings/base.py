@@ -208,3 +208,5 @@ CACHES = {
 CACHE_TTL = 20 * 1
 
 SCRAPER_SERVICE = 'smart_bookmarks.scrapers.services.ScraperService'
+
+CHROME_DRIVER_PATH="/usr/bin/chromedriver"

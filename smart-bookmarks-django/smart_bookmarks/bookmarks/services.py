@@ -14,5 +14,5 @@ class BookmarkService:
     def add_bookmark(self, url):
         guid = url_guid(url)
         bookmark = Bookmark.objects.create(guid=guid, url=url)
-        self._scraper_service.enqueue_scrape_page_task(bookmark)
+        self._scraper_service.scrape_page_async(bookmark)
         return bookmark
