@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from smart_bookmarks.bookmarks.forms import AddBookmarkForm
-from smart_bookmarks.bookmarks.models import Bookmark
-from smart_bookmarks.bookmarks.services import BookmarkService
+from smart_bookmarks.ui.forms import AddBookmarkForm
+from smart_bookmarks.core.models import Bookmark
+from smart_bookmarks.core.services import BookmarkService
 
 
 def add_bookmark(request):

@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'smart_bookmarks.bookmarks',
+    'smart_bookmarks.core',
     'smart_bookmarks.authentication',
     'smart_bookmarks.scrapers',
+    'smart_bookmarks.search',
+    'smart_bookmarks.ui',
 ]
 
 MIDDLEWARE = [
@@ -210,3 +212,7 @@ CACHE_TTL = 20 * 1
 SCRAPER_SERVICE = 'smart_bookmarks.scrapers.services.ScraperService'
 
 CHROME_DRIVER_PATH="/usr/bin/chromedriver"
+
+SEARCH_SERVICE = 'smart_bookmarks.search.services.SearchService'
+
+ELASTICSEARCH_HOST = 'elasticsearch'

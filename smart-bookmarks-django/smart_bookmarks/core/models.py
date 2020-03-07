@@ -1,6 +1,6 @@
 from django.db import models
 
-from smart_bookmarks.bookmarks.db import BookmarkManager, PageManager
+from smart_bookmarks.core.db import BookmarkManager, PageManager
 
 
 class Bookmark(models.Model):

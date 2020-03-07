@@ -2,7 +2,7 @@ from django.test import TestCase
 from urllib.parse import urlparse
 
 # Create your tests here.
-from smart_bookmarks.bookmarks.utils import url_guid
+from smart_bookmarks.core.utils import url_guid
 
 
 def test_foo():
