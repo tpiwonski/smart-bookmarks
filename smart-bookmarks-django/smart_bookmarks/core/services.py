@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.db import transaction
 
-from smart_bookmarks.bookmarks.models import Bookmark
-from smart_bookmarks.bookmarks.utils import url_guid, service_instance
+from smart_bookmarks.core.models import Bookmark
+from smart_bookmarks.core.utils import url_guid, service_instance
 
 
 class BookmarkService:

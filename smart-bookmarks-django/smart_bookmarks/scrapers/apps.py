@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class ScraperConfig(AppConfig):
-    name = 'scraper'
+class ScrapersConfig(AppConfig):
+    name = 'scrapers'

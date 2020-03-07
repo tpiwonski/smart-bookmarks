@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from smart_bookmarks.ui import views
+
 urlpatterns = [
-    path('bookmarks/', include('smart_bookmarks.bookmarks.urls')),
+    path('bookmarks/', include('smart_bookmarks.ui.urls')),
     path('admin/', admin.site.urls),
+    path('', views.add_bookmark)
 ]

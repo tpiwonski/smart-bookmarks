@@ -1,5 +1,5 @@
 from django.urls import re_path
-from smart_bookmarks.bookmarks import views
+from smart_bookmarks.ui import views
 
 urlpatterns = [
     re_path(r'^add$', views.add_bookmark, name='add-bookmark'),
