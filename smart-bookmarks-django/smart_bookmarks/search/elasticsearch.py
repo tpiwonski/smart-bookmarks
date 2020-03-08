@@ -1,10 +1,11 @@
-from elasticsearch_dsl import connections, Document, Text
+from elasticsearch_dsl import connections, Document, Text, Integer
 from smart_bookmarks.core import models
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 
 class Page(Document):
+    bookmark_id = Integer()
     text = Text()
 
     class Index:
@@ -18,8 +19,9 @@ class ElasticsearchService:
         Page.init()
 
     def index_page(self, page: models.Page):
-        page_document = Page(meta={'id': page.id}, text=page.text)
+        page_document = Page(meta={'id': page.id}, bookmark_id=page.bookmark.id, text=page.text)
         page_document.save()
+        return page_document
 
     def search_page(self, term):
         search = Page.search().query('match', text=term)

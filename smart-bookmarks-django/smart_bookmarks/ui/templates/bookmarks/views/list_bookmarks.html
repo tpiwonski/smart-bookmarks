@@ -1,8 +1,0 @@
-{% extends "bookmarks/base.html" %}
-{% block body %}
-<ul>
-    {% for bookmark in bookmarks %}
-    {% include "bookmarks/fragments/show_bookmark.html" with bookmark=bookmark %}
-    {% endfor %}
-</ul>
-{% endblock %}

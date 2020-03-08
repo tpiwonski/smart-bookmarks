@@ -173,6 +173,10 @@ CELERY_BEAT_SCHEDULE = {
     'scrape-pages-task': {
         'task': 'smart_bookmarks.scrapers.tasks.scrape_pages',
         'schedule': timedelta(seconds=20)
+    },
+    'index_pages-task': {
+        'task': 'smart_bookmarks.search.tasks.index_pages',
+        'schedule': timedelta(seconds=20)
     }
 }
 
@@ -209,10 +213,12 @@ CACHES = {
 
 CACHE_TTL = 20 * 1
 
+PAGE_SERVICE = 'smart_bookmarks.core.services.PageService'
 SCRAPER_SERVICE = 'smart_bookmarks.scrapers.services.ScraperService'
 
 CHROME_DRIVER_PATH="/usr/bin/chromedriver"
 
+INDEX_SERVICE = "smart_bookmarks.search.services.IndexService"
 SEARCH_SERVICE = 'smart_bookmarks.search.services.SearchService'
 
 ELASTICSEARCH_HOST = 'elasticsearch'
