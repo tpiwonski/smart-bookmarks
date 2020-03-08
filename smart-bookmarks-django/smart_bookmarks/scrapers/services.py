@@ -14,7 +14,8 @@ class ScraperService:
 
     def __init__(self):
         self._scraper_service = SeleniumScraperService(settings.CHROME_DRIVER_PATH)
-        self._search_service = service_instance(settings.SEARCH_SERVICE)
+        # self._index_service = service_instance(settings.INDEX_SERVICE)
+        self._page_service = service_instance(settings.PAGE_SERVICE)
 
     def scrape_page_async(self, bookmark):
         scrape_page = ScrapePage.objects.create(bookmark=bookmark)
@@ -28,13 +29,13 @@ class ScraperService:
             return None
 
         page = self.scrape_page(bookmark)
-        self._search_service.index_page(page)
         return page
 
     def scrape_page(self, bookmark):
         LOGGER.info("Scrape page for bookmark: bookmark_id=%s", bookmark.id)
         scraped_content = self._scraper_service.scrape_page(bookmark.url)
-        page = Page.objects.create(bookmark=bookmark, text=scraped_content)
+        page = self._page_service.create_page(bookmark, scraped_content)
+        # self._index_service.index_page_async(page)
         LOGGER.info(
             "Page scraped for bookmark: page_id=%s, bookmark_id=%s", page.id, bookmark.id)
         return page

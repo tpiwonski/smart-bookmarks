@@ -17,14 +17,13 @@ class Bookmark(models.Model):
             models.UniqueConstraint(fields=['guid'], name='uq_bookmark_quid')]
         db_table = 'bookmark'
 
-    @property
-    def last_page(self):
-        return self.pages.latest('updated')
+    def __str__(self):
+        return f"Bookmark#{self.id}:url={self.url}"
 
 
 class Page(models.Model):
     id = models.AutoField(primary_key=True)
-    bookmark = models.ForeignKey(Bookmark, on_delete=models.CASCADE, related_name='pages')
+    bookmark = models.OneToOneField(Bookmark, on_delete=models.CASCADE, related_name='page')
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -33,3 +32,6 @@ class Page(models.Model):
 
     class Meta:
         db_table = 'page'
+
+    def __str__(self):
+        return f"Page#{self.id}:bookmark={self.bookmark}"
