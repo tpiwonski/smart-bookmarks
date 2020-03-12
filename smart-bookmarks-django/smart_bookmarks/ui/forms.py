@@ -7,3 +7,8 @@ class AddBookmarkForm(forms.Form):
 
 class SearchBookmarksForm(forms.Form):
     q = forms.CharField(max_length=1024)
+    op = forms.ChoiceField(choices=[('AND', 'AND'), ('OR', 'OR')], widget=forms.RadioSelect)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.initial['op'] = 'AND'

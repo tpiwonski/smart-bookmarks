@@ -10,6 +10,13 @@ from smart_bookmarks.search.models import IndexPage
 LOGGER = logging.getLogger(__name__)
 
 
+OPERATOR_AND = 'and'
+OPERATOR_OR = 'or'
+OPERATORS = [
+    (OPERATOR_AND, OPERATOR_AND),
+    (OPERATOR_OR, OPERATOR_OR)]
+
+
 class IndexService:
 
     def __init__(self):
@@ -38,7 +45,7 @@ class SearchService:
     def __init__(self):
         self._search_service = ElasticsearchService(settings.ELASTICSEARCH_HOST)
 
-    def search_bookmarks(self, term):
-        pages = self._search_service.search_page(term)
+    def search_bookmarks(self, query, operator):
+        pages = self._search_service.search_page(query, operator)
         page_ids = [page.meta.id for page in pages]
         return Bookmark.objects.by_page_ids(page_ids)

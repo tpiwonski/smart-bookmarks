@@ -1,4 +1,4 @@
-from elasticsearch_dsl import connections, Document, Text, Integer
+from elasticsearch_dsl import connections, Document, Text, Integer, Q
 from smart_bookmarks.core import models
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
@@ -23,7 +23,11 @@ class ElasticsearchService:
         page_document.save()
         return page_document
 
-    def search_page(self, term):
-        search = Page.search().query('match', text=term)
+    def search_page(self, query, operator):
+        search = Page.search().query(
+            Q('match', text={
+                'query': query,
+                'fuzziness': 'AUTO',
+                'operator': operator.upper() if operator else 'AND'}))
         results = search.execute()
         return results
