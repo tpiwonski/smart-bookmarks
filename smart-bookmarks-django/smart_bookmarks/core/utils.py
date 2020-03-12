@@ -12,12 +12,3 @@ def url_guid(url):
     hash.update(content)
     # return base64.b64encode(hash.digest())
     return hash.hexdigest()
-
-
-def service_instance(service_path):
-    service_class = import_string(service_path)
-    return service_class()
-
-
-def event_instance(event_path):
-    return import_string(event_path)

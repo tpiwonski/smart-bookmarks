@@ -1,10 +1,7 @@
-import logging
+from celery import shared_task
 
-from celery import shared_task, Task
-from django.conf import settings
-
-from smart_bookmarks.core.utils import service_instance
 from smart_bookmarks.search.models import IndexPage
+from smart_bookmarks.search.services import IndexService
 
 
 @shared_task(bind=True)
@@ -16,5 +13,4 @@ def index_pages(self):
 
 @shared_task(bind=True)
 def index_page(self, page_id):
-    index_service = service_instance(settings.INDEX_SERVICE)
-    index_service.index_page_by_id(page_id)
+    IndexService().index_page_by_id(page_id)
