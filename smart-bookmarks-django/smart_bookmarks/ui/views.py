@@ -1,18 +1,15 @@
-from django.conf import settings
 from django.shortcuts import render, redirect
-from django.urls import reverse
 
-from smart_bookmarks.core.utils import service_instance
-from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
 from smart_bookmarks.core.models import Bookmark
-from smart_bookmarks.core.services import BookmarkService
+from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
+from smart_bookmarks.ui.controllers import SearchController, BookmarkController
 
 
 def add_bookmark(request):
     if request.method == 'POST':
         form = AddBookmarkForm(request.POST)
         if form.is_valid():
-            bookmark = BookmarkService().create_bookmark(form.cleaned_data['url'])
+            bookmark = BookmarkController().create_bookmark(form.cleaned_data['url'])
             return redirect('show-bookmark', guid=bookmark.guid)
 
     else:
@@ -42,9 +39,8 @@ def search_bookmarks(request):
     # if request.method == 'POST':
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
-        search_service = service_instance(settings.SEARCH_SERVICE)
         context = {
-            'bookmarks': search_service.search_bookmarks(
+            'bookmarks': SearchController().search_bookmarks(
                 query=form.cleaned_data['q'],
                 operator=form.cleaned_data['op'])
         }

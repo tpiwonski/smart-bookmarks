@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 
+from smart_bookmarks.core.interfaces import IndexServiceInterface, SearchServiceInterface
 from smart_bookmarks.core.models import Bookmark, Page
 from smart_bookmarks.search.elasticsearch import ElasticsearchService
 from smart_bookmarks.search.models import IndexPage
@@ -17,7 +18,7 @@ OPERATORS = [
     (OPERATOR_OR, OPERATOR_OR)]
 
 
-class IndexService:
+class IndexService(IndexServiceInterface):
 
     def __init__(self):
         self._search_service = ElasticsearchService(settings.ELASTICSEARCH_HOST)
@@ -40,7 +41,7 @@ class IndexService:
         self._search_service.index_page(page)
 
 
-class SearchService:
+class SearchService(SearchServiceInterface):
 
     def __init__(self):
         self._search_service = ElasticsearchService(settings.ELASTICSEARCH_HOST)
