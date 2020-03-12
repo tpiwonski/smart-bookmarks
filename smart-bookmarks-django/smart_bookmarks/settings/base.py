@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'smart_bookmarks.scrapers',
     'smart_bookmarks.search',
     'smart_bookmarks.ui',
+    'smart_bookmarks.importers',
 ]
 
 MIDDLEWARE = [

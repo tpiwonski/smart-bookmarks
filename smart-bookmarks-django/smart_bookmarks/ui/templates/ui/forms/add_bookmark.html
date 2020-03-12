@@ -1,8 +1,0 @@
-{% extends "ui/base.html" %}
-{% block body %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
-{% endblock %}

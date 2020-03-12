@@ -39,14 +39,16 @@ def list_bookmarks(request):
 
 
 def search_bookmarks(request):
-    if request.method == 'POST':
-        form = SearchBookmarksForm(request.POST)
-        if form.is_valid():
-            search_service = service_instance(settings.SEARCH_SERVICE)
-            context = {
-                'bookmarks': search_service.search_bookmarks(form.cleaned_data['q'])
-            }
-            return render(request, 'ui/views/list_bookmarks.html', context)
+    # if request.method == 'POST':
+    form = SearchBookmarksForm(request.GET)
+    if form.is_valid():
+        search_service = service_instance(settings.SEARCH_SERVICE)
+        context = {
+            'bookmarks': search_service.search_bookmarks(
+                query=form.cleaned_data['q'],
+                operator=form.cleaned_data['op'])
+        }
+        return render(request, 'ui/views/list_bookmarks.html', context)
 
     else:
         form = SearchBookmarksForm()
@@ -54,4 +56,4 @@ def search_bookmarks(request):
     context = {
         'form': form
     }
-    return render(request, 'ui/forms/add_bookmark.html', context)
+    return render(request, 'ui/views/search_bookmarks.html', context)
