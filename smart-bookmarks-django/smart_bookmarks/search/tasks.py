@@ -1,7 +1,7 @@
 from celery import shared_task
 
 from smart_bookmarks.search.models import IndexPage
-from smart_bookmarks.search.services import IndexService
+from smart_bookmarks.search.services import IndexBookmarkService
 
 
 @shared_task(bind=True)
@@ -13,4 +13,4 @@ def index_pages(self):
 
 @shared_task(bind=True)
 def index_page(self, page_id):
-    IndexService().index_page_by_id(page_id)
+    IndexBookmarkService().index_page_by_id(page_id)

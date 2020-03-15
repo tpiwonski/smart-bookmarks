@@ -14,6 +14,8 @@ services:
     depends_on:
       - database
       - redis
+      - elasticsearch
+      - nginx
   celery-beat:
     image: app-image
     restart: unless-stopped
@@ -28,28 +30,30 @@ services:
       - redis
   celery-worker-default:
     image: app-image
+    shm_size: 2G
     restart: unless-stopped
     env_file:
       - .docker.env
-    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "default", "--concurrency=2", "-n", "worker.default@%h"]
+    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "default", "--concurrency=4", "-n", "worker.default@%h"]
     volumes:
       - .:/app
     depends_on:
       - database
       - rabbitmq
       - redis
-  celery-worker-priority:
-    image: app-image
-    restart: unless-stopped
-    env_file:
-      - .docker.env
-    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "priority", "--concurrency=4", "-n", "worker.priority@%h"]
-    volumes:
-      - .:/app
-    depends_on:
-      - database
-      - rabbitmq
-      - redis
+      - elasticsearch
+#  celery-worker-priority:
+#    image: app-image
+#    restart: unless-stopped
+#    env_file:
+#      - .docker.env
+#    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "priority", "--concurrency=4", "-n", "worker.priority@%h"]
+#    volumes:
+#      - .:/app
+#    depends_on:
+#      - database
+#      - rabbitmq
+#      - redis
   rabbitmq:
     image: rabbitmq:3.8.2
     restart: unless-stopped
@@ -65,8 +69,8 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./smart_bookmarks/static_root:/static
-    depends_on:
-      - app
+#    depends_on:
+#      - app
   database:
     restart: unless-stopped
     image: postgres:12
@@ -101,6 +105,8 @@ services:
       - cluster.initial_master_nodes=elasticsearch
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
     ulimits:
       memlock:
         soft: -1
@@ -109,12 +115,14 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-#  elasticsearch-head:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile-elasticsearch-head
-#    ports:
-#    - 9100:9100
+  elasticsearch-head:
+    build:
+      context: .
+      dockerfile: Dockerfile-elasticsearch-head
+    ports:
+      - 9100:9100
+    depends_on:
+      - elasticsearch
 
 volumes:
   dbdata:

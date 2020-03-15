@@ -24,7 +24,10 @@ class Bookmark(models.Model):
 class Page(models.Model):
     id = models.AutoField(primary_key=True)
     bookmark = models.OneToOneField(Bookmark, on_delete=models.CASCADE, related_name='page')
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1024)
     text = models.TextField()
+    source = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

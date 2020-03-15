@@ -1,8 +1,8 @@
 <div>
-    <div>{{ bookmark.id }}</div>
-    <div><a href="{% url 'show-bookmark' bookmark.guid %}">{{ bookmark.guid }}</a></div>
-    <div>{{ bookmark.url }}</div>
-    <div>{{ bookmark.created }}</div>
-    <div>{{ bookmark.updated }}</div>
-    <div>{{ bookmark.page.text }}</div>
+<!--    <div>{{ bookmark.id }}</div>-->
+    <a href="{% url 'show-bookmark' bookmark.guid %}">{{ bookmark.url }}</a>
+    <a href="{{ bookmark.url }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+<!--    <div>{{ bookmark.created }}</div>-->
+<!--    <div>{{ bookmark.updated }}</div>-->
+<!--    <div>{{ bookmark.page.text }}</div>-->
 </div>
