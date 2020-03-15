@@ -1,4 +1,4 @@
-from smart_bookmarks.core.registry import get_search_service, get_bookmark_service
+from smart_bookmarks.core.registry import get_search_bookmark_service, get_bookmark_service
 
 
 class BookmarkController:
@@ -12,7 +12,7 @@ class BookmarkController:
 
 class SearchController:
 
-    def __init__(self, search_service=get_search_service):
+    def __init__(self, search_service=get_search_bookmark_service):
         self._search_service = search_service()
 
     def search_bookmarks(self, query, operator):

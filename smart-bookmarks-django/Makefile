@@ -16,3 +16,7 @@ drop-db:
 	docker-compose exec database dropdb -U dev smart-bookmarks-dev
 create-db:
 	docker-compose exec database createdb -U dev smart-bookmarks-dev
+start-es:
+	docker-compose up -d elasticsearch-head
+start-app:
+	docker-compose up -d app

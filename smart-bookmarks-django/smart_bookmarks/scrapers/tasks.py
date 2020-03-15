@@ -3,7 +3,7 @@ import logging
 from celery import shared_task, Task
 
 from smart_bookmarks.scrapers.models import ScrapePage
-from smart_bookmarks.scrapers.services import ScraperService
+from smart_bookmarks.scrapers.services import ScrapePageService
 
 LOGGER = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class ScrapePageTask(Task):
     @property
     def scraper_service(self):
         if not self._scraper_service:
-            self._scraper_service = ScraperService()
+            self._scraper_service = ScrapePageService()
 
         return self._scraper_service
 

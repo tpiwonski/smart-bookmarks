@@ -6,4 +6,6 @@ WORKDIR /elasticsearch-head
 
 RUN npm install
 
+EXPOSE 9100
+
 ENTRYPOINT ["npm", "run", "start"]

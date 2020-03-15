@@ -214,12 +214,13 @@ CACHES = {
 
 CACHE_TTL = 20 * 1
 
-PAGE_SERVICE = 'smart_bookmarks.core.services.PageService'
-SCRAPER_SERVICE = 'smart_bookmarks.scrapers.services.ScraperService'
-
 CHROME_DRIVER_PATH="/usr/bin/chromedriver"
 
-INDEX_SERVICE = "smart_bookmarks.search.services.IndexService"
-SEARCH_SERVICE = 'smart_bookmarks.search.services.SearchService'
+BOOKMARK_SERVICE = 'smart_bookmarks.core.services.BookmarkService'
+PAGE_SERVICE = 'smart_bookmarks.core.services.PageService'
+SCRAPE_PAGE_SERVICE = 'smart_bookmarks.scrapers.services.ScrapePageService'
+INDEX_BOOKMARK_SERVICE = "smart_bookmarks.search.services.IndexBookmarkService"
+SEARCH_BOOKMARK_SERVICE = 'smart_bookmarks.search.services.SearchBookmarkService'
+IMPORT_BOOKMARK_SERVICE = 'smart_bookmarks.importers.services.ImportBookmarkService'
 
 ELASTICSEARCH_HOST = 'elasticsearch'
