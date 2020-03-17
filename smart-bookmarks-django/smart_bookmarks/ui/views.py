@@ -40,11 +40,11 @@ def search_bookmarks(request):
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
         context = {
-            'bookmarks': SearchController().search_bookmarks(
+            'found_bookmarks': SearchController().search_bookmarks(
                 query=form.cleaned_data['q'],
                 operator=form.cleaned_data['op'])
         }
-        return render(request, 'ui/views/list_bookmarks.html', context)
+        return render(request, 'ui/views/search_bookmarks_results.html', context)
 
     else:
         form = SearchBookmarksForm()

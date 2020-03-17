@@ -1,0 +1,14 @@
+{% extends "ui/base.html" %}
+{% load search_tags %}
+{% load bookmark_tags %}
+{% block body %}
+<ul>
+    {% for found_bookmark in found_bookmarks %}
+    {% bookmark_card found_bookmark.bookmark %}
+    {% search_highlights found_bookmark.highlights.url %}
+    {% search_highlights found_bookmark.highlights.title %}
+    {% search_highlights found_bookmark.highlights.description %}
+    {% search_highlights found_bookmark.highlights.text %}
+    {% endfor %}
+</ul>
+{% endblock %}
