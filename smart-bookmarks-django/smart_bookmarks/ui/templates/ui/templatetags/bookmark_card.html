@@ -1,0 +1,8 @@
+<div class="card">
+    <div class="card-body">
+        <h6 class="card-title">{{ bookmark.page.title }}</h6>
+        <p class="card-text">{{ bookmark.page.description }}</p>
+        <a href="{% url 'show-bookmark' bookmark.guid %}" class="card-link">Details</a>
+        <a href="{{ bookmark.url }}" target="_blank" class="card-link">{{ bookmark.url }}&nbsp;<i class="fas fa-external-link-alt"></i></a>
+    </div>
+</div>

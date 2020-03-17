@@ -1,5 +1,6 @@
 import abc
 from dataclasses import dataclass
+from typing import List
 
 from smart_bookmarks.core.models import Bookmark, Page
 
@@ -44,10 +45,25 @@ class IndexBookmarkInterface(abc.ABC):
         """TODO"""
 
 
+@dataclass
+class BookmarkHighlights:
+    url: List[str]
+    title: List[str]
+    description: List[str]
+    text: List[str]
+
+
+@dataclass
+class FoundBookmark:
+    bookmark: Bookmark
+    score: float
+    highlights: BookmarkHighlights
+
+
 class SearchBookmarkInterface(abc.ABC):
 
     @abc.abstractmethod
-    def search_bookmarks(self, query: str, operator: str):
+    def search_bookmarks(self, query: str, operator: str) -> List[FoundBookmark]:
         """TODO"""
 
 
