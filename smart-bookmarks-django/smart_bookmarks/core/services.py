@@ -9,11 +9,13 @@ from smart_bookmarks.core.utils import url_guid
 class BookmarkService(CreateBookmarkInterface):
 
     scrape_page_service = inject(get_scrape_page_service)
+    index_page_service = inject(get_index_bookmark_service)
 
     @transaction.atomic
     def create_bookmark(self, url):
         guid = url_guid(url)
         bookmark = Bookmark.objects.create(guid=guid, url=url)
+        self.index_page_service.index_bookmark_async(bookmark)
         self.scrape_page_service.scrape_page_async(bookmark)
         return bookmark
 
@@ -27,5 +29,5 @@ class PageService(CreatePageInterface):
         page = Page.objects.create(
             bookmark=bookmark, title=page_data.title, description=page_data.description, text=page_data.text,
             source=page_data.source)
-        self.index_page_service.index_page_async(page)
+        self.index_page_service.index_bookmark_async(bookmark)
         return page

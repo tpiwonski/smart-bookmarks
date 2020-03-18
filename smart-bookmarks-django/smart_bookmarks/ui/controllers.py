@@ -1,4 +1,6 @@
+from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import get_search_bookmark_service, get_bookmark_service
+from smart_bookmarks.core.utils import url_guid
 
 
 class BookmarkController:
@@ -6,8 +8,12 @@ class BookmarkController:
     def __init__(self, bookmark_service=get_bookmark_service):
         self._bookmark_service = bookmark_service()
 
-    def create_bookmark(self, url):
-        return self._bookmark_service.create_bookmark(url)
+    def add_bookmark(self, url):
+        bookmark_guid = url_guid(url)
+        if not Bookmark.objects.guid_exists(bookmark_guid=bookmark_guid):
+            return self._bookmark_service.create_bookmark(url)
+
+        return Bookmark.objects.by_guid(bookmark_guid)
 
 
 class SearchController:

@@ -1,15 +1,15 @@
 from django.db import models, transaction
 
 
-class IndexPageManager(models.Manager):
+class IndexBookmarkManager(models.Manager):
 
     @transaction.atomic
-    def pages_to_index(self, limit=10):
-        index_pages = (
+    def bookmarks_to_index(self, limit=10):
+        index_bookmarks = (
             self.get_queryset().
             select_for_update().
-            order_by('created')[:limit])
+            order_by('id')[:limit])
 
-        pages = [index_page.page for index_page in index_pages]
-        self.get_queryset().filter(id__in=index_pages).delete()
-        return pages
+        bookmarks = [index_bookmark.bookmark for index_bookmark in index_bookmarks]
+        self.get_queryset().filter(id__in=index_bookmarks).delete()
+        return bookmarks

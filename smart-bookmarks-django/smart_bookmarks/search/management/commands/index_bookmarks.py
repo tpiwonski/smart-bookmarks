@@ -1,14 +1,14 @@
 from django.core.management import BaseCommand
 
-from smart_bookmarks.core.models import Page
+from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import get_index_bookmark_service
 
 
 class Command(BaseCommand):
-    help = 'Index all bookmarks'
+    help = 'Index bookmarks'
 
     def handle(self, *args, **options):
         index_service = get_index_bookmark_service()
-        pages = Page.objects.all()
-        for page in pages:
-            index_service.index_page(page)
+        bookmarks = Bookmark.objects.bookmarks_to_index()
+        for bookmark in bookmarks:
+            index_service.index_bookmark_async(bookmark)

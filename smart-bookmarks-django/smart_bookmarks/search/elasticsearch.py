@@ -1,10 +1,10 @@
 import functools
 import operator as op
+from dataclasses import dataclass
 
-from elasticsearch_dsl import connections, Document, Text, Integer, Q
+from elasticsearch_dsl import connections, Document, Text, Q
+
 from smart_bookmarks.core import models
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search
 
 SEARCH_OPERATOR_AND = 'AND'
 SEARCH_OPERATOR_OR = 'OR'
@@ -13,31 +13,42 @@ SEARCH_OPERATORS = (SEARCH_OPERATOR_AND, SEARCH_OPERATOR_OR)
 SEARCH_FIELDS = ('url', 'title', 'description', 'text')
 
 
-class Page(Document):
-    bookmark_id = Integer()
+@dataclass
+class BookmarkData:
+    id: int
+    url: str
+    title: str
+    description: str
+    text: str
+
+
+class BookmarkDocument(Document):
     url = Text()
     title = Text()
     description = Text()
     text = Text()
 
     class Index:
-        name = 'smart-bookmarks-page'
+        name = 'smart-bookmarks-bookmark'
 
 
 class ElasticsearchService:
 
     def __init__(self, elasticsearch_host):
         connections.create_connection(hosts=[elasticsearch_host])
-        Page.init()
+        BookmarkDocument.init()
 
-    def index_page(self, page: models.Page):
-        page_document = Page(
-            meta={'id': page.id}, bookmark_id=page.bookmark.id, url=page.bookmark.url, title=page.title,
-            description=page.description, text=page.text)
-        page_document.save()
-        return page_document
+    def index_bookmark(self, bookmark_data: BookmarkData):
+        bookmark_document = BookmarkDocument(
+            meta={'id': bookmark_data.id},
+            url=bookmark_data.url,
+            title=bookmark_data.title,
+            description=bookmark_data.description,
+            text=bookmark_data.text)
+        bookmark_document.save()
+        return bookmark_document
 
-    def search_page(self, query, operator):
+    def search_bookmark(self, query, operator):
         search_operator = operator.upper()
         if search_operator not in SEARCH_OPERATORS:
             raise Exception(f"Unknown search operator {o}")
@@ -50,7 +61,7 @@ class ElasticsearchService:
             for field in SEARCH_FIELDS]
 
         search_query = functools.reduce(op.or_, search_queries)
-        search = Page.search().query(search_query).highlight(*SEARCH_FIELDS)
+        search = BookmarkDocument.search().query(search_query).highlight(*SEARCH_FIELDS)
 
         # q = Q('multi_match', query=query, fields=['url', 'title', 'description', 'text'])
             # Q('match', text={

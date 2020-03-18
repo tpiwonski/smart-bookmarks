@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField()),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='page', to='core.Bookmark')),
+                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='_page', to='core.Bookmark')),
             ],
             options={
                 'db_table': 'page',

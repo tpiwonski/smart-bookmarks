@@ -1,16 +1,17 @@
 from django.db import models
 
 # Create your models here.
-from smart_bookmarks.search.db import IndexPageManager
+from smart_bookmarks.search.db import IndexBookmarkManager
 
 
-class IndexPage(models.Model):
+class IndexBookmark(models.Model):
     id = models.AutoField(primary_key=True)
-    page = models.OneToOneField('core.Page', on_delete=models.CASCADE, related_name='index_page')
+    bookmark = models.OneToOneField('core.Bookmark', on_delete=models.CASCADE, related_name='index_bookmark')
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
-    objects = IndexPageManager()
+    objects = IndexBookmarkManager()
 
     class Meta:
-        db_table = 'index_page'
+        db_table = 'index_bookmark'
+        constraints = [
+            models.UniqueConstraint(fields=['bookmark'], name='uq_bookmark_id')]

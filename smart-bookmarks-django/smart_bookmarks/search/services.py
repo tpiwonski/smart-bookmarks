@@ -1,13 +1,14 @@
 import logging
 
 from django.conf import settings
+from django.utils.timezone import now
 
 from smart_bookmarks.core.interfaces import IndexBookmarkInterface, SearchBookmarkInterface, FoundBookmark, \
     BookmarkHighlights
 from smart_bookmarks.core.models import Bookmark, Page
 from smart_bookmarks.core.registry import inject
-from smart_bookmarks.search.elasticsearch import ElasticsearchService
-from smart_bookmarks.search.models import IndexPage
+from smart_bookmarks.search.elasticsearch import ElasticsearchService, BookmarkData
+from smart_bookmarks.search.models import IndexBookmark
 
 
 LOGGER = logging.getLogger(__name__)
@@ -24,21 +25,30 @@ class IndexBookmarkService(IndexBookmarkInterface):
 
     search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
 
-    def index_page_async(self, page):
-        index_page = IndexPage.objects.create(page=page)
-        LOGGER.info("Index page created: index_page_id=%s, page_id=%s", index_page.id, page.id)
+    def index_bookmark_async(self, bookmark):
+        index_bookmark = IndexBookmark.objects.create(bookmark=bookmark)
+        LOGGER.info("Index bookmark created: index_bookmark_id=%s, bookmark_id=%s", index_bookmark.id, bookmark.id)
 
-    def index_page(self, page):
-        self.search_bookmark_service.index_page(page)
-        LOGGER.info("Page indexed: page_id=%s", page.id)
+    def index_bookmark(self, bookmark: Bookmark):
+        bookmark_data = BookmarkData(
+            id=bookmark.id,
+            url=bookmark.url,
+            title=bookmark.page.title if bookmark.page else None,
+            description=bookmark.page.description if bookmark.page else None,
+            text=bookmark.page.text if bookmark.page else None)
 
-    def index_page_by_id(self, page_id):
-        page = Page.objects.by_id(page_id)
-        if page is None:
-            LOGGER.info("Page does not exist: page_id=%s", page_id)
+        self.search_bookmark_service.index_bookmark(bookmark_data)
+        bookmark.indexed = now()
+        bookmark.save(update_fields=['updated', 'indexed'])
+        LOGGER.info("Bookmark indexed: bookmark_id=%s", bookmark.id)
+
+    def index_bookmark_by_id(self, bookmark_id):
+        bookmark = Bookmark.objects.by_id(bookmark_id)
+        if bookmark is None:
+            LOGGER.info("Bookmark does not exist: bookmark_id=%s", bookmark_id)
             return
 
-        self.index_page(page)
+        self.index_bookmark(bookmark)
 
 
 class SearchBookmarkService(SearchBookmarkInterface):
@@ -46,10 +56,10 @@ class SearchBookmarkService(SearchBookmarkInterface):
     search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
 
     def search_bookmarks(self, query, operator):
-        search_results = self.search_bookmark_service.search_page(query, operator)
+        search_results = self.search_bookmark_service.search_bookmark(query, operator)
         found_bookmarks = [
             FoundBookmark(
-                bookmark=Bookmark.objects.get(id=found_bookmark.bookmark_id),
+                bookmark=Bookmark.objects.get(id=found_bookmark.meta.id),
                 score=found_bookmark.meta.score,
                 highlights=BookmarkHighlights(
                     url=self.get_highlight(found_bookmark.meta.highlight, 'url'),
