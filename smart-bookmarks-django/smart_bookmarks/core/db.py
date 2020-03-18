@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q, F
 
 
 class BookmarkManager(models.Manager):
@@ -20,6 +21,12 @@ class BookmarkManager(models.Manager):
 
     def guid_exists(self, bookmark_guid):
         return self.get_queryset().filter(guid=bookmark_guid).exists()
+
+    def bookmarks_to_index(self):
+        return self.get_queryset().filter(Q(indexed__isnull=True) | Q(_page__updated__gt=F('indexed'))).order_by('id')
+
+    def bookmarks_to_scrape(self):
+        return self.get_queryset().filter(_page__isnull=True).order_by('id')
 
 
 class PageManager(models.Manager):

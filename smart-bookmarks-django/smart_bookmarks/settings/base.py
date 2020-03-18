@@ -175,8 +175,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'smart_bookmarks.scrapers.tasks.scrape_pages',
         'schedule': timedelta(seconds=20)
     },
-    'index_pages-task': {
-        'task': 'smart_bookmarks.search.tasks.index_pages',
+    'index-bookmarks-task': {
+        'task': 'smart_bookmarks.search.tasks.index_bookmarks',
         'schedule': timedelta(seconds=20)
     }
 }

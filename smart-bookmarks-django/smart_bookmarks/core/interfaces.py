@@ -37,11 +37,15 @@ class ScrapePageInterface(abc.ABC):
 class IndexBookmarkInterface(abc.ABC):
 
     @abc.abstractmethod
-    def index_page_async(self, page: Page):
+    def index_bookmark_async(self, bookmark: Bookmark):
         """TODO"""
 
     @abc.abstractmethod
-    def index_page(self, page: Page):
+    def index_bookmark(self, bookmark: Bookmark):
+        """TODO"""
+
+    @abc.abstractmethod
+    def index_bookmark_by_id(self, bookmark_id):
         """TODO"""
 
 

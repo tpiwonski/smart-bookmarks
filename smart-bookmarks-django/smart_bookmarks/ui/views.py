@@ -9,7 +9,7 @@ def add_bookmark(request):
     if request.method == 'POST':
         form = AddBookmarkForm(request.POST)
         if form.is_valid():
-            bookmark = BookmarkController().create_bookmark(form.cleaned_data['url'])
+            bookmark = BookmarkController().add_bookmark(form.cleaned_data['url'])
             return redirect('show-bookmark', guid=bookmark.guid)
 
     else:

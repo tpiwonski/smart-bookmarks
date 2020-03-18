@@ -9,6 +9,7 @@ class Bookmark(models.Model):
     url = models.URLField(max_length=2048)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    indexed = models.DateTimeField(null=True)
 
     objects = BookmarkManager()
 
@@ -20,10 +21,14 @@ class Bookmark(models.Model):
     def __str__(self):
         return f"Bookmark#{self.id}:url={self.url}"
 
+    @property
+    def page(self):
+        return getattr(self, '_page', None)
+
 
 class Page(models.Model):
     id = models.AutoField(primary_key=True)
-    bookmark = models.OneToOneField(Bookmark, on_delete=models.CASCADE, related_name='page')
+    bookmark = models.OneToOneField(Bookmark, on_delete=models.CASCADE, related_name='_page')
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1024)
     text = models.TextField()
