@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
     env_file:
       - .docker.env
-    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "scraper", "--concurrency=6", "-n", "worker.scraper@%h"]
+    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "scraper", "--concurrency=2", "-n", "worker.scraper@%h"]
     volumes:
       - .:/app
     depends_on:
