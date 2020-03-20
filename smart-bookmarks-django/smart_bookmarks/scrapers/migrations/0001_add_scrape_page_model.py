@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='scrape_page', to='core.Bookmark')),
+                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='_scrape_page', to='core.Bookmark')),
             ],
             options={
                 'db_table': 'scrape_page',

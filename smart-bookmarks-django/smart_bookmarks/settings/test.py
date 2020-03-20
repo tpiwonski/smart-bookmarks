@@ -18,4 +18,4 @@ DATABASES = {
     # },
 }
 
-CHROME_DRIVER_PATH = os.path.join(BASE_DIR, "..", "chromedriver.exe")
+CHROME_DRIVER_PATH = os.path.join(BASE_DIR, "..", "bin/chromedriver.exe")

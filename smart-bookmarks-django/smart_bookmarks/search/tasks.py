@@ -5,8 +5,8 @@ from smart_bookmarks.search.services import IndexBookmarkService
 
 
 @shared_task(bind=True)
-def index_bookmarks(self):
-    bookmarks = IndexBookmark.objects.bookmarks_to_index()
+def index_bookmarks(self, limit=10):
+    bookmarks = IndexBookmark.objects.bookmarks_to_index_in_task(limit=None)
     for bookmark in bookmarks:
         index_bookmark.delay(bookmark_id=bookmark.id)
 

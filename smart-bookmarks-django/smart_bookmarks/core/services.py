@@ -26,8 +26,17 @@ class PageService(CreatePageInterface):
 
     @transaction.atomic
     def create_page(self, bookmark, page_data):
-        page = Page.objects.create(
-            bookmark=bookmark, title=page_data.title, description=page_data.description, text=page_data.text,
-            source=page_data.source)
+        page = Page.objects.by_bookmark_id(bookmark.id)
+        if page:
+            page.title = page_data.title
+            page.description = page_data.description
+            page.text = page_data.text
+            page.source = page_data.source
+            page.save(update_fields=['title', 'description', 'text', 'source'])
+        else:
+            page = Page.objects.create(
+                bookmark=bookmark, title=page_data.title, description=page_data.description, text=page_data.text,
+                source=page_data.source)
+
         self.index_page_service.index_bookmark_async(bookmark)
         return page

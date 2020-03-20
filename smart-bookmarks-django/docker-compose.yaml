@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     env_file:
       - .docker.env
-    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "default", "--concurrency=4", "-n", "worker.default@%h"]
+    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "default", "--concurrency=2", "-n", "worker.default@%h"]
     volumes:
       - .:/app
     depends_on:
@@ -42,18 +42,19 @@ services:
       - rabbitmq
       - redis
       - elasticsearch
-#  celery-worker-priority:
-#    image: app-image
-#    restart: unless-stopped
-#    env_file:
-#      - .docker.env
-#    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "priority", "--concurrency=4", "-n", "worker.priority@%h"]
-#    volumes:
-#      - .:/app
-#    depends_on:
-#      - database
-#      - rabbitmq
-#      - redis
+  celery-worker-scraper:
+    image: app-image
+    shm_size: 2G
+    restart: unless-stopped
+    env_file:
+      - .docker.env
+    command: ["/usr/bin/env", "celery", "--app=smart_bookmarks.celery:celery_app", "worker", "-l", "info", "-Q", "scraper", "--concurrency=6", "-n", "worker.scraper@%h"]
+    volumes:
+      - .:/app
+    depends_on:
+      - database
+      - rabbitmq
+      - redis
   rabbitmq:
     image: rabbitmq:3.8.2
     restart: unless-stopped

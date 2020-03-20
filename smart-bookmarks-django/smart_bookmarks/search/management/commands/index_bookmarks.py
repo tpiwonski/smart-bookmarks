@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
-from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import get_index_bookmark_service
+from smart_bookmarks.search.models import IndexBookmark
 
 
 class Command(BaseCommand):
@@ -9,6 +9,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         index_service = get_index_bookmark_service()
-        bookmarks = Bookmark.objects.bookmarks_to_index()
+        bookmarks = IndexBookmark.objects.bookmarks_not_yet_indexed()
         for bookmark in bookmarks:
             index_service.index_bookmark_async(bookmark)

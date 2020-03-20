@@ -184,7 +184,7 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_DEFAULT_QUEUE = 'default'
 CELERY_TASK_QUEUES = (
     Queue('default', routing_key='task.#'),
-    Queue('priority', routing_key='priority.#')
+    Queue('scraper', routing_key='scraper.#')
 )
 CELERY_TASK_DEFAULT_EXCHANGE = 'tasks'
 CELERY_TASK_DEFAULT_EXCHANGE_TYPE = 'topic'
@@ -199,6 +199,9 @@ CELERY_TASK_ROUTES = {
     #     # 'queue': 'priority'
     #     'routing_key': 'priority.simple'
     # },
+    'smart_bookmarks.scrapers.tasks.scrape_page': {
+        'routing_key': 'scraper.scrape-page'
+    }
 }
 
 CACHES = {
