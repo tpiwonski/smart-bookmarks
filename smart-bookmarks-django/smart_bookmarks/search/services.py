@@ -26,7 +26,10 @@ class IndexBookmarkService(IndexBookmarkInterface):
     search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
 
     def index_bookmark_async(self, bookmark):
-        index_bookmark = IndexBookmark.objects.create(bookmark=bookmark)
+        index_bookmark = IndexBookmark.objects.by_bookmark_id(bookmark.id)
+        if not index_bookmark:
+            index_bookmark = IndexBookmark.objects.create(bookmark=bookmark)
+
         LOGGER.info("Index bookmark created: index_bookmark_id=%s, bookmark_id=%s", index_bookmark.id, bookmark.id)
 
     def index_bookmark(self, bookmark: Bookmark):

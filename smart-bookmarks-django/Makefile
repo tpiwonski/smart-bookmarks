@@ -1,11 +1,13 @@
 build:
 	docker-compose build
 up:
-	docker-compose up
+	docker-compose up -d
 down:
 	docker-compose down
 stop:
 	docker-compose stop
+logs:
+	docker-compose logs -f
 start-db:
 	docker-compose up -d database
 stop-db:

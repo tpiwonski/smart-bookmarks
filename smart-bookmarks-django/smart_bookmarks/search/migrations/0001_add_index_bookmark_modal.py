@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='index_bookmark', to='core.Bookmark')),
+                ('bookmark', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='_index_bookmark', to='core.Bookmark')),
             ],
             options={
                 'db_table': 'index_bookmark',

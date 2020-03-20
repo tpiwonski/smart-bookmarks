@@ -30,7 +30,7 @@ def show_bookmark(request, guid):
 
 def list_bookmarks(request):
     context = {
-        'bookmarks': Bookmark.objects.all()
+        'bookmarks': Bookmark.objects.list_all()
     }
     return render(request, "ui/views/list_bookmarks.html", context)
 

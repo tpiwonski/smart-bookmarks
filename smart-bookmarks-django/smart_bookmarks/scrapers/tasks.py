@@ -25,7 +25,7 @@ def scrape_page(self, bookmark_id):
 
 
 @shared_task(bind=True)
-def scrape_pages(self):
-    bookmarks = ScrapePage.objects.bookmarks_to_scrape()
+def scrape_pages(self, limit=10):
+    bookmarks = ScrapePage.objects.bookmarks_to_scrape_in_task(limit=limit)
     for bookmark in bookmarks:
         scrape_page.delay(bookmark_id=bookmark.id)
