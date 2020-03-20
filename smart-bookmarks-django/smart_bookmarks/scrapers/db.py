@@ -1,7 +1,7 @@
 from django.db import models, transaction
 from django.db.models import Q
 
-from smart_bookmarks.core.models import Bookmark
+from smart_bookmarks.core.models import Bookmark, Page
 
 
 class ScrapePageManager(models.Manager):
@@ -29,3 +29,6 @@ class ScrapePageManager(models.Manager):
                     Q(_page__isnull=True)
                     & Q(_scrape_page__isnull=True))
                 .order_by('id'))
+
+    def bookmark_is_scraped(self, bookmark_id):
+        return Page.objects.filter(bookmark_id=bookmark_id).exists()

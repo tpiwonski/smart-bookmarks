@@ -21,7 +21,10 @@ class ScrapePageTask(Task):
 
 @shared_task(bind=True, base=ScrapePageTask)
 def scrape_page(self, bookmark_id):
-    self.scraper_service.scrape_page_by_id(bookmark_id=bookmark_id)
+    if not ScrapePage.objects.bookmark_is_scraped(bookmark_id):
+        self.scraper_service.scrape_page_by_id(bookmark_id=bookmark_id)
+    else:
+        LOGGER.info(f"Bookmark already scrapped: bookmark_id={bookmark_id}")
 
 
 @shared_task(bind=True)

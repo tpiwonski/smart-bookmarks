@@ -1,13 +1,16 @@
 import logging
 from dataclasses import dataclass
-from time import sleep
-from typing import List
 
+import requests
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.options import Options
 
 LOGGER = logging.getLogger(__name__)
+
+
+class ScrapeError(Exception):
+    pass
 
 
 @dataclass
@@ -43,7 +46,6 @@ class SeleniumScrapePageService:
 
         self._web_driver = webdriver.Remote(
             self._service.service_url, desired_capabilities=chrome_options.to_capabilities())
-        self._web_driver.implicitly_wait(10)
 
     def dispose_driver(self):
         LOGGER.info("Dispose web driver")
@@ -61,13 +63,24 @@ class SeleniumScrapePageService:
         self._service = None
 
     def scrape_page(self, url) -> PageData:
+        try:
+            result = requests.get(url)
+        except Exception as ex:
+            LOGGER.exception(ex)
+            raise ScrapeError(f"Error occurred when requesting URL: url={url} error={str(ex)}")
+
         if self._web_driver is None:
             self.init_driver()
 
-        for timeout in (1, 3, 5, 10, 15):
+        for timeout in (30, 60, 120):
             try:
                 LOGGER.info(f"Scrape page: url={url} timeout={timeout}")
                 return self.parse_page(url, timeout)
+            except ScrapeError:
+                raise
+            except WebDriverException as ex:
+                LOGGER.exception(ex)
+                self.dispose_driver()
             except Exception as ex:
                 LOGGER.exception(ex)
 
@@ -75,14 +88,16 @@ class SeleniumScrapePageService:
         raise Exception(f"Failed to scrape page: url={url}")
 
     def parse_page(self, url, timeout) -> PageData:
+        self._web_driver.implicitly_wait(timeout)
         self._web_driver.get(url)
-        sleep(timeout)
+        # sleep(timeout)
+
         title = self._web_driver.title
         source = self._web_driver.page_source
         html_tag = self._web_driver.find_element_by_tag_name('html')
         text = html_tag.text
         if not text:
-            raise Exception(f"No text scraped for page: url={url}")
+            raise ScrapeError(f"No text scraped for page: url={url}")
 
         try:
             description_tag = self._web_driver.find_element_by_xpath("//meta[@name='description']")
