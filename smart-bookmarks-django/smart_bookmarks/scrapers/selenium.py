@@ -10,7 +10,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ScrapeError(Exception):
-    pass
+
+    def __init__(self, message):
+        self.message = message
 
 
 @dataclass
@@ -32,20 +34,24 @@ class SeleniumScrapePageService:
         self._web_driver = None
         self._service = None
 
-        self._service = webdriver.chrome.service.Service(self.chrome_driver_path)
-        self._service.start()
+        try:
+            self._service = webdriver.chrome.service.Service(self.chrome_driver_path)
+            self._service.start()
 
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("window-size=1920,1080")
-        chrome_options.add_argument('--disable-gpu')
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("window-size=1920,1080")
+            chrome_options.add_argument('--disable-gpu')
 
-        # path to the binary of Chrome Canary that we installed earlier
-        # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
+            # path to the binary of Chrome Canary that we installed earlier
+            # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
 
-        self._web_driver = webdriver.Remote(
-            self._service.service_url, desired_capabilities=chrome_options.to_capabilities())
+            self._web_driver = webdriver.Remote(
+                self._service.service_url, desired_capabilities=chrome_options.to_capabilities())
+        except Exception as ex:
+            LOGGER.exception(ex)
+            raise ScrapeError(f"Init driver error: error={str(ex)}")
 
     def dispose_driver(self):
         LOGGER.info("Dispose web driver")
@@ -64,10 +70,10 @@ class SeleniumScrapePageService:
 
     def scrape_page(self, url) -> PageData:
         try:
-            result = requests.get(url)
+            requests.get(url)
         except Exception as ex:
             LOGGER.exception(ex)
-            raise ScrapeError(f"Error occurred when requesting URL: url={url} error={str(ex)}")
+            raise ScrapeError(f"Error occurred when requesting URL: error={str(ex)}")
 
         if self._web_driver is None:
             self.init_driver()
@@ -85,7 +91,7 @@ class SeleniumScrapePageService:
                 LOGGER.exception(ex)
 
         self.dispose_driver()
-        raise Exception(f"Failed to scrape page: url={url}")
+        raise ScrapeError(f"Unable to scrape page")
 
     def parse_page(self, url, timeout) -> PageData:
         self._web_driver.implicitly_wait(timeout)
@@ -97,7 +103,7 @@ class SeleniumScrapePageService:
         html_tag = self._web_driver.find_element_by_tag_name('html')
         text = html_tag.text
         if not text:
-            raise ScrapeError(f"No text scraped for page: url={url}")
+            raise ScrapeError(f"No text available for page")
 
         try:
             description_tag = self._web_driver.find_element_by_xpath("//meta[@name='description']")
