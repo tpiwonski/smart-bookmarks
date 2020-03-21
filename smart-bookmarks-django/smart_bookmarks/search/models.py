@@ -1,17 +1,17 @@
 from django.db import models
 
 # Create your models here.
-from smart_bookmarks.search.db import IndexBookmarkManager
+from smart_bookmarks.search.db import IndexBookmarkTaskManager
 
 
-class IndexBookmark(models.Model):
+class IndexBookmarkTask(models.Model):
     id = models.AutoField(primary_key=True)
-    bookmark = models.OneToOneField('core.Bookmark', on_delete=models.CASCADE, related_name='_index_bookmark')
+    bookmark = models.OneToOneField('core.Bookmark', on_delete=models.CASCADE, related_name='_index_bookmark_task')
     created = models.DateTimeField(auto_now_add=True)
 
-    objects = IndexBookmarkManager()
+    objects = IndexBookmarkTaskManager()
 
     class Meta:
-        db_table = 'index_bookmark'
+        db_table = 'index_bookmark_task'
         constraints = [
             models.UniqueConstraint(fields=['bookmark'], name='uq_bookmark_id')]

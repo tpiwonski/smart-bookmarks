@@ -1,15 +1,15 @@
 from django.db import models
 
-from smart_bookmarks.scrapers.db import ScrapePageManager
+from smart_bookmarks.scrapers.db import ScrapePageTaskManager
 
 
-class ScrapePage(models.Model):
+class ScrapePageTask(models.Model):
     id = models.AutoField(primary_key=True)
-    bookmark = models.OneToOneField('core.Bookmark', on_delete=models.CASCADE, related_name='_scrape_page')
+    bookmark = models.OneToOneField('core.Bookmark', on_delete=models.CASCADE, related_name='_scrape_page_task')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    objects = ScrapePageManager()
+    objects = ScrapePageTaskManager()
 
     class Meta:
-        db_table = 'scrape_page'
+        db_table = 'scrape_page_task'
