@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from smart_bookmarks.scrapers.models import ScrapePage
+from smart_bookmarks.scrapers.models import ScrapePageTask
 
-admin.site.register([ScrapePage])
+admin.site.register([ScrapePageTask])

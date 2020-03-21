@@ -1,12 +1,12 @@
 from celery import shared_task
 
-from smart_bookmarks.search.models import IndexBookmark
+from smart_bookmarks.search.models import IndexBookmarkTask
 from smart_bookmarks.search.services import IndexBookmarkService
 
 
 @shared_task(bind=True)
 def index_bookmarks(self, limit=10):
-    bookmarks = IndexBookmark.objects.bookmarks_to_index_in_task(limit=None)
+    bookmarks = IndexBookmarkTask.objects.bookmarks_to_index_in_task(limit=None)
     for bookmark in bookmarks:
         index_bookmark.delay(bookmark_id=bookmark.id)
 

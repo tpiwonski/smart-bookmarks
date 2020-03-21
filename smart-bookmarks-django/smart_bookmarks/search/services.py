@@ -8,7 +8,7 @@ from smart_bookmarks.core.interfaces import IndexBookmarkInterface, SearchBookma
 from smart_bookmarks.core.models import Bookmark, Page
 from smart_bookmarks.core.registry import inject
 from smart_bookmarks.search.elasticsearch import ElasticsearchService, BookmarkData
-from smart_bookmarks.search.models import IndexBookmark
+from smart_bookmarks.search.models import IndexBookmarkTask
 
 
 LOGGER = logging.getLogger(__name__)
@@ -26,11 +26,13 @@ class IndexBookmarkService(IndexBookmarkInterface):
     search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
 
     def index_bookmark_async(self, bookmark):
-        index_bookmark = IndexBookmark.objects.by_bookmark_id(bookmark.id)
-        if not index_bookmark:
-            index_bookmark = IndexBookmark.objects.create(bookmark=bookmark)
+        task = IndexBookmarkTask.objects.task_by_bookmark_id(bookmark.id)
+        if not task:
+            task = IndexBookmarkTask.objects.create(bookmark=bookmark)
+        else:
+            task.save(update_fields=['updated'])
 
-        LOGGER.info("Index bookmark created: index_bookmark_id=%s, bookmark_id=%s", index_bookmark.id, bookmark.id)
+        LOGGER.info("Index bookmark created: index_bookmark_id=%s, bookmark_id=%s", task.id, bookmark.id)
 
     def index_bookmark(self, bookmark: Bookmark):
         bookmark_data = BookmarkData(
