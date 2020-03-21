@@ -5,8 +5,8 @@ from django.conf import settings
 from smart_bookmarks.core.interfaces import ScrapePageInterface, PageData, CreatePageInterface
 from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import get_page_service, inject
-from smart_bookmarks.scrapers.models import ScrapePageTask
-from smart_bookmarks.scrapers.selenium import SeleniumScrapePageService
+from smart_bookmarks.scrapers.models import ScrapePageTask, ScrapePageError
+from smart_bookmarks.scrapers.selenium import SeleniumScrapePageService, ScrapeError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -37,7 +37,15 @@ class ScrapePageService(ScrapePageInterface):
 
     def scrape_page(self, bookmark):
         LOGGER.info("Scrape page for bookmark: bookmark_id=%s", bookmark.id)
-        scraped_data = self.scrape_page_service.scrape_page(bookmark.url)
+        try:
+            scraped_data = self.scrape_page_service.scrape_page(bookmark.url)
+        except ScrapeError as ex:
+            ScrapePageError.objects.create(bookmark=bookmark, message=ex.message)
+            raise
+        except Exception as ex:
+            ScrapePageError.objects.create(bookmark=bookmark, message=str(ex))
+            raise
+
         page_data = PageData(
             title=scraped_data.title if scraped_data.title else scraped_data.text[:255].title,
             description=scraped_data.description[:1024] if scraped_data.description else scraped_data.text[:1024],

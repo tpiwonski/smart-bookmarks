@@ -27,7 +27,8 @@ class ScrapePageTaskManager(models.Manager):
         return (Bookmark.objects
                 .filter(
                     Q(_page__isnull=True)
-                    & Q(_scrape_page_task__isnull=True))
+                    & Q(_scrape_page_task__isnull=True)
+                    & Q(_scrape_page_error__isnull=True))
                 .order_by('id'))
 
     def is_bookmark_scraped(self, bookmark_id):

@@ -14,4 +14,4 @@ class IndexBookmarkTask(models.Model):
     class Meta:
         db_table = 'index_bookmark_task'
         constraints = [
-            models.UniqueConstraint(fields=['bookmark'], name='uq_bookmark_id')]
+            models.UniqueConstraint(fields=['bookmark'], name='uq_index_bookmark_task_bookmark_id')]
