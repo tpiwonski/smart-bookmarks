@@ -21,9 +21,9 @@ def add_bookmark(request):
     return render(request, 'ui/views/add_bookmark.html', context)
 
 
-def show_bookmark(request, guid):
+def show_bookmark(request, bookmark_guid):
     context = {
-        'bookmark': Bookmark.objects.by_guid(guid)
+        'bookmark': Bookmark.objects.by_guid(bookmark_guid)
     }
     return render(request, "ui/views/show_bookmark.html", context)
 

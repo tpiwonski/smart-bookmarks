@@ -1,0 +1,6 @@
+{% load toast_tags %}
+<div id="toasts">
+    {% for toast_data in toasts %}
+    {% toast toast_data %}
+    {% endfor %}
+</div>

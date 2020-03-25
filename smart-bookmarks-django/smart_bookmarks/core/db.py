@@ -25,6 +25,9 @@ class BookmarkManager(models.Manager):
     def list_all(self):
         return self.get_queryset().all().select_related('_page')
 
+    def delete_by_guid(self, bookmark_guid):
+        return self.get_queryset().filter(guid=bookmark_guid).delete()
+
 
 class PageManager(models.Manager):
 
