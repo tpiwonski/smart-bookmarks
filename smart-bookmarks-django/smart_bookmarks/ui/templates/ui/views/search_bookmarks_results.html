@@ -4,11 +4,13 @@
 {% block body %}
 <ul>
     {% for found_bookmark in found_bookmarks %}
+    <li data-bookmark-guid="{{ found_bookmark.bookmark.guid }}">
     {% bookmark_card found_bookmark.bookmark %}
     {% search_highlights found_bookmark.highlights.url %}
     {% search_highlights found_bookmark.highlights.title %}
     {% search_highlights found_bookmark.highlights.description %}
     {% search_highlights found_bookmark.highlights.text %}
+    </li>
     {% endfor %}
 </ul>
 {% endblock %}
