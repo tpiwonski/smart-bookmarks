@@ -1,6 +1,4 @@
-import $ from 'jquery';
 import Cookies from 'js-cookie';
-
 
 const ajax = options => {
     const { url, method } = options;
@@ -11,6 +9,6 @@ const ajax = options => {
             xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
         }
     })
-}
+};
 
 export default ajax;

@@ -140,9 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "ui", "static_root")
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "ui", "static"),
-    os.path.join(BASE_DIR, "ui", "frontend", "dist"),
-]
+    os.path.join(BASE_DIR, "ui", "static"),]
 
 LOGGING = {
     'version': 1,

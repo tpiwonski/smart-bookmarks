@@ -58,7 +58,7 @@ class BookmarkHighlights:
 
 
 @dataclass
-class FoundBookmark:
+class BookmarkResult:
     bookmark: Bookmark
     score: float
     highlights: BookmarkHighlights
@@ -67,7 +67,7 @@ class FoundBookmark:
 class SearchBookmarkInterface(abc.ABC):
 
     @abc.abstractmethod
-    def search_bookmarks(self, query: str, operator: str) -> List[FoundBookmark]:
+    def search_bookmarks(self, query: str, operator: str) -> List[BookmarkResult]:
         """TODO"""
 
 

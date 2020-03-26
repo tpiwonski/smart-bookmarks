@@ -1,8 +1,11 @@
 {% extends "ui/base.html" %}
+{% load bookmark_tags %}
 {% block body %}
 <ul>
     {% for bookmark in bookmarks %}
-    {% include "ui/fragments/show_bookmark.html" with bookmark=bookmark %}
+    <li data-bookmark-guid="{{ found_bookmark.bookmark.guid }}">
+    {% bookmark_card bookmark %}
+    </li>
     {% endfor %}
 </ul>
 {% endblock %}
