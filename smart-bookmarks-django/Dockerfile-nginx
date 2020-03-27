@@ -1,0 +1,19 @@
+FROM node:13.8 as FRONTEND_BUILDER
+WORKDIR /app
+COPY ./smart_bookmarks/ui/frontend/ ./
+RUN yarn install
+RUN npx webpack
+
+FROM python:3.7 as UI_BUILDER
+WORKDIR /app
+RUN pip install --upgrade pip && pip install poetry==1.0.3
+COPY pyproject.toml poetry.lock ./
+RUN poetry config virtualenvs.create false && poetry install --no-dev
+COPY . ./
+
+COPY --from=FRONTEND_BUILDER /static/ ./smart_bookmarks/ui/static/
+RUN python manage.py collectstatic
+
+FROM nginx:1.17
+COPY --from=UI_BUILDER /app/smart_bookmarks/ui/static_root/ /static/
+COPY nginx/ /etc/nginx/conf.d/

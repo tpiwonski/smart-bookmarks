@@ -63,13 +63,16 @@ services:
     ports:
       - 5672:5672
   nginx:
-    image: nginx:1.17
+#    image: nginx:1.17
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
     restart: unless-stopped
     ports:
       - 8000:8000
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./smart_bookmarks/static_root:/static
+#    volumes:
+#      - ./nginx:/etc/nginx/conf.d
+#      - ./smart_bookmarks/ui/static_root:/static
 #    depends_on:
 #      - app
   database:
