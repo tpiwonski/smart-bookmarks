@@ -10,7 +10,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ScrapeError(Exception):
-
     def __init__(self, message):
         self.message = message
 
@@ -24,7 +23,6 @@ class PageData:
 
 
 class SeleniumScrapePageService:
-
     def __init__(self, chrome_driver_path):
         self.chrome_driver_path = chrome_driver_path
         self.init_driver()
@@ -42,13 +40,15 @@ class SeleniumScrapePageService:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("window-size=1920,1080")
-            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument("--disable-gpu")
 
             # path to the binary of Chrome Canary that we installed earlier
             # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
 
             self._web_driver = webdriver.Remote(
-                self._service.service_url, desired_capabilities=chrome_options.to_capabilities())
+                self._service.service_url,
+                desired_capabilities=chrome_options.to_capabilities(),
+            )
         except Exception as ex:
             LOGGER.exception(ex)
             raise ScrapeError(f"Init driver error: error={str(ex)}")
@@ -100,16 +100,18 @@ class SeleniumScrapePageService:
 
         title = self._web_driver.title
         source = self._web_driver.page_source
-        html_tag = self._web_driver.find_element_by_tag_name('html')
+        html_tag = self._web_driver.find_element_by_tag_name("html")
         text = html_tag.text
         if not text:
             raise ScrapeError(f"No text available for page")
 
         try:
-            description_tag = self._web_driver.find_element_by_xpath("//meta[@name='description']")
+            description_tag = self._web_driver.find_element_by_xpath(
+                "//meta[@name='description']"
+            )
         except NoSuchElementException:
             description = None
         else:
-            description = description_tag.get_attribute('content')
+            description = description_tag.get_attribute("content")
 
         return PageData(title=title, description=description, text=text, source=source)

@@ -3,36 +3,43 @@ import logging
 from django.conf import settings
 from django.utils.timezone import now
 
-from smart_bookmarks.core.interfaces import IndexBookmarkInterface, SearchBookmarkInterface, BookmarkResult, \
-    BookmarkHighlights
+from smart_bookmarks.core.interfaces import (
+    BookmarkHighlights,
+    BookmarkResult,
+    IndexBookmarkInterface,
+    SearchBookmarkInterface,
+)
 from smart_bookmarks.core.models import Bookmark, Page
 from smart_bookmarks.core.registry import inject
-from smart_bookmarks.search.elasticsearch import ElasticsearchService, BookmarkData
+from smart_bookmarks.search.elasticsearch import BookmarkData, ElasticsearchService
 from smart_bookmarks.search.models import IndexBookmarkTask
-
 
 LOGGER = logging.getLogger(__name__)
 
 
-OPERATOR_AND = 'and'
-OPERATOR_OR = 'or'
-OPERATORS = [
-    (OPERATOR_AND, OPERATOR_AND),
-    (OPERATOR_OR, OPERATOR_OR)]
+OPERATOR_AND = "and"
+OPERATOR_OR = "or"
+OPERATORS = [(OPERATOR_AND, OPERATOR_AND), (OPERATOR_OR, OPERATOR_OR)]
 
 
 class IndexBookmarkService(IndexBookmarkInterface):
 
-    search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
+    search_bookmark_service = inject(
+        lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST)
+    )
 
     def index_bookmark_async(self, bookmark):
         task = IndexBookmarkTask.objects.task_by_bookmark_id(bookmark.id)
         if not task:
             task = IndexBookmarkTask.objects.create(bookmark=bookmark)
         else:
-            task.save(update_fields=['updated'])
+            task.save(update_fields=["updated"])
 
-        LOGGER.info("Index bookmark created: index_bookmark_id=%s, bookmark_id=%s", task.id, bookmark.id)
+        LOGGER.info(
+            "Index bookmark created: index_bookmark_id=%s, bookmark_id=%s",
+            task.id,
+            bookmark.id,
+        )
 
     def index_bookmark(self, bookmark: Bookmark):
         bookmark_data = BookmarkData(
@@ -40,11 +47,12 @@ class IndexBookmarkService(IndexBookmarkInterface):
             url=bookmark.url,
             title=bookmark.page.title if bookmark.page else None,
             description=bookmark.page.description if bookmark.page else None,
-            text=bookmark.page.text if bookmark.page else None)
+            text=bookmark.page.text if bookmark.page else None,
+        )
 
         self.search_bookmark_service.index_bookmark(bookmark_data)
         bookmark.indexed = now()
-        bookmark.save(update_fields=['updated', 'indexed'])
+        bookmark.save(update_fields=["updated", "indexed"])
         LOGGER.info("Bookmark indexed: bookmark_id=%s", bookmark.id)
 
     def index_bookmark_by_id(self, bookmark_id):
@@ -58,7 +66,9 @@ class IndexBookmarkService(IndexBookmarkInterface):
 
 class SearchBookmarkService(SearchBookmarkInterface):
 
-    search_bookmark_service = inject(lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST))
+    search_bookmark_service = inject(
+        lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST)
+    )
 
     def search_bookmarks(self, query, operator):
         search_results = self.search_bookmark_service.search_bookmark(query, operator)
@@ -73,10 +83,17 @@ class SearchBookmarkService(SearchBookmarkInterface):
                     bookmark=bookmark,
                     score=bookmark_result.meta.score,
                     highlights=BookmarkHighlights(
-                        url=self.get_highlight(bookmark_result.meta.highlight, 'url'),
-                        title=self.get_highlight(bookmark_result.meta.highlight, 'title'),
-                        description=self.get_highlight(bookmark_result.meta.highlight, 'description'),
-                        text=self.get_highlight(bookmark_result.meta.highlight, 'text'))))
+                        url=self.get_highlight(bookmark_result.meta.highlight, "url"),
+                        title=self.get_highlight(
+                            bookmark_result.meta.highlight, "title"
+                        ),
+                        description=self.get_highlight(
+                            bookmark_result.meta.highlight, "description"
+                        ),
+                        text=self.get_highlight(bookmark_result.meta.highlight, "text"),
+                    ),
+                )
+            )
 
         return bookmark_results
 

@@ -1,17 +1,13 @@
 from django.db import models, transaction
-from django.db.models import Q, F
+from django.db.models import F, Q
 
 from smart_bookmarks.core.models import Bookmark
 
 
 class IndexBookmarkTaskManager(models.Manager):
-
     @transaction.atomic
     def bookmarks_to_index_in_task(self, limit=None):
-        index_bookmarks = (
-            self.get_queryset().
-            select_for_update().
-            order_by('id'))
+        index_bookmarks = self.get_queryset().select_for_update().order_by("id")
 
         if limit:
             index_bookmarks = index_bookmarks[:limit]
@@ -27,10 +23,7 @@ class IndexBookmarkTaskManager(models.Manager):
             return None
 
     def bookmarks_not_yet_indexed(self, limit=None):
-        return (
-            Bookmark.objects
-            .filter(
-                (Q(indexed__isnull=True)
-                 | Q(_page__updated__gt=F('indexed')))
-                & Q(_index_bookmark_task__isnull=True))
-            .order_by('id'))
+        return Bookmark.objects.filter(
+            (Q(indexed__isnull=True) | Q(_page__updated__gt=F("indexed")))
+            & Q(_index_bookmark_task__isnull=True)
+        ).order_by("id")

@@ -5,31 +5,31 @@ from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
 
 
 def add_bookmark(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AddBookmarkForm(request.POST)
         if form.is_valid():
-            bookmark = BookmarkController().add_bookmark(form.cleaned_data['url'])
-            return redirect('show-bookmark', bookmark_guid=bookmark.guid)
+            bookmark = BookmarkController().add_bookmark(form.cleaned_data["url"])
+            return redirect("show-bookmark", bookmark_guid=bookmark.guid)
 
     else:
         form = AddBookmarkForm()
 
-    context = {
-        'form': form
-    }
-    return render(request, 'ui/views/add_bookmark.html', context)
+    context = {"form": form}
+    return render(request, "ui/views/add_bookmark.html", context)
 
 
 def show_bookmark(request, bookmark_guid):
     return render(
-        request, "ui/views/show_bookmark.html",
-        BookmarkController().get_bookmark(bookmark_guid))
+        request,
+        "ui/views/show_bookmark.html",
+        BookmarkController().get_bookmark(bookmark_guid),
+    )
 
 
 def list_bookmarks(request):
     return render(
-        request, "ui/views/list_bookmarks.html",
-        BookmarkController().list_bookmarks())
+        request, "ui/views/list_bookmarks.html", BookmarkController().list_bookmarks()
+    )
 
 
 def search_bookmarks(request):
@@ -37,15 +37,15 @@ def search_bookmarks(request):
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
         return render(
-            request, 'ui/views/search_bookmarks_results.html',
+            request,
+            "ui/views/search_bookmarks_results.html",
             SearchController().search_bookmarks(
-                query=form.cleaned_data['q'],
-                operator=form.cleaned_data['op']))
+                query=form.cleaned_data["q"], operator=form.cleaned_data["op"]
+            ),
+        )
 
     else:
         form = SearchBookmarksForm()
 
-    context = {
-        'form': form
-    }
-    return render(request, 'ui/views/search_bookmarks.html', context)
+    context = {"form": form}
+    return render(request, "ui/views/search_bookmarks.html", context)

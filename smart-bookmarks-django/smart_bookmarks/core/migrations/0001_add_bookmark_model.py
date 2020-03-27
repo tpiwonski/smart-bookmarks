@@ -7,26 +7,24 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Bookmark',
+            name="Bookmark",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('guid', models.CharField(max_length=64)),
-                ('url', models.URLField(max_length=2048)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("guid", models.CharField(max_length=64)),
+                ("url", models.URLField(max_length=2048)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
             ],
-            options={
-                'db_table': 'bookmark',
-                'abstract': False,
-            },
+            options={"db_table": "bookmark", "abstract": False},
         ),
         migrations.AddConstraint(
-            model_name='bookmark',
-            constraint=models.UniqueConstraint(fields=('guid',), name='uq_bookmark_quid'),
+            model_name="bookmark",
+            constraint=models.UniqueConstraint(
+                fields=("guid",), name="uq_bookmark_quid"
+            ),
         ),
     ]

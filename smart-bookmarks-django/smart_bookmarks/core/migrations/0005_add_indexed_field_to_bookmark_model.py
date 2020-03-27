@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_require_title_description_source_in_page_model'),
+        ("core", "0004_require_title_description_source_in_page_model"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bookmark',
-            name='indexed',
+            model_name="bookmark",
+            name="indexed",
             field=models.DateTimeField(null=True),
         ),
     ]
