@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
-from smart_bookmarks.core.models import Bookmark
+from smart_bookmarks.ui.controllers import BookmarkController, SearchController
 from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
-from smart_bookmarks.ui.controllers import SearchController, BookmarkController
 
 
 def add_bookmark(request):
@@ -10,7 +9,7 @@ def add_bookmark(request):
         form = AddBookmarkForm(request.POST)
         if form.is_valid():
             bookmark = BookmarkController().add_bookmark(form.cleaned_data['url'])
-            return redirect('show-bookmark', guid=bookmark.guid)
+            return redirect('show-bookmark', bookmark_guid=bookmark.guid)
 
     else:
         form = AddBookmarkForm()
@@ -22,29 +21,26 @@ def add_bookmark(request):
 
 
 def show_bookmark(request, bookmark_guid):
-    context = {
-        'bookmark': Bookmark.objects.by_guid(bookmark_guid)
-    }
-    return render(request, "ui/views/show_bookmark.html", context)
+    return render(
+        request, "ui/views/show_bookmark.html",
+        BookmarkController().get_bookmark(bookmark_guid))
 
 
 def list_bookmarks(request):
-    context = {
-        'bookmarks': Bookmark.objects.list_all()
-    }
-    return render(request, "ui/views/list_bookmarks.html", context)
+    return render(
+        request, "ui/views/list_bookmarks.html",
+        BookmarkController().list_bookmarks())
 
 
 def search_bookmarks(request):
     # if request.method == 'POST':
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
-        context = {
-            'found_bookmarks': SearchController().search_bookmarks(
+        return render(
+            request, 'ui/views/search_bookmarks_results.html',
+            SearchController().search_bookmarks(
                 query=form.cleaned_data['q'],
-                operator=form.cleaned_data['op'])
-        }
-        return render(request, 'ui/views/search_bookmarks_results.html', context)
+                operator=form.cleaned_data['op']))
 
     else:
         form = SearchBookmarksForm()

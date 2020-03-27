@@ -3,13 +3,13 @@
 {% load bookmark_tags %}
 {% block body %}
 <ul>
-    {% for found_bookmark in found_bookmarks %}
-    <li data-bookmark-guid="{{ found_bookmark.bookmark.guid }}">
-    {% bookmark_card found_bookmark.bookmark %}
-    {% search_highlights found_bookmark.highlights.url %}
-    {% search_highlights found_bookmark.highlights.title %}
-    {% search_highlights found_bookmark.highlights.description %}
-    {% search_highlights found_bookmark.highlights.text %}
+    {% for bookmark_result in bookmark_results %}
+    <li data-bookmark-guid="{{ bookmark_result.bookmark.guid }}">
+    {% bookmark_card bookmark_result.bookmark %}
+    {% search_highlights bookmark_result.highlights.url %}
+    {% search_highlights bookmark_result.highlights.title %}
+    {% search_highlights bookmark_result.highlights.description %}
+    {% search_highlights bookmark_result.highlights.text %}
     </li>
     {% endfor %}
 </ul>

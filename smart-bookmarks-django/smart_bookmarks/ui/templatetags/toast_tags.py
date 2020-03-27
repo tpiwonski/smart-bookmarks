@@ -11,8 +11,18 @@ TOAST_ERROR = 'error'
 
 @dataclass
 class Toast:
-    type: str
     message: str
+    type: str
+
+
+@dataclass
+class ToastInfo(Toast):
+    type: str = TOAST_INFO
+
+
+@dataclass
+class ToastError(Toast):
+    type: str = TOAST_ERROR
 
 
 @register.inclusion_tag('ui/templatetags/toast.html')

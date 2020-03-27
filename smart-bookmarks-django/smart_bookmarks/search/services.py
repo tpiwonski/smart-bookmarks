@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.utils.timezone import now
 
-from smart_bookmarks.core.interfaces import IndexBookmarkInterface, SearchBookmarkInterface, FoundBookmark, \
+from smart_bookmarks.core.interfaces import IndexBookmarkInterface, SearchBookmarkInterface, BookmarkResult, \
     BookmarkHighlights
 from smart_bookmarks.core.models import Bookmark, Page
 from smart_bookmarks.core.registry import inject
@@ -62,18 +62,23 @@ class SearchBookmarkService(SearchBookmarkInterface):
 
     def search_bookmarks(self, query, operator):
         search_results = self.search_bookmark_service.search_bookmark(query, operator)
-        found_bookmarks = [
-            FoundBookmark(
-                bookmark=Bookmark.objects.get(id=found_bookmark.meta.id),
-                score=found_bookmark.meta.score,
-                highlights=BookmarkHighlights(
-                    url=self.get_highlight(found_bookmark.meta.highlight, 'url'),
-                    title=self.get_highlight(found_bookmark.meta.highlight, 'title'),
-                    description=self.get_highlight(found_bookmark.meta.highlight, 'description'),
-                    text=self.get_highlight(found_bookmark.meta.highlight, 'text')))
-            for found_bookmark in search_results]
+        bookmark_results = []
+        for bookmark_result in search_results:
+            bookmark = Bookmark.objects.by_id(bookmark_result.meta.id)
+            if not bookmark:
+                continue
 
-        return found_bookmarks
+            bookmark_results.append(
+                BookmarkResult(
+                    bookmark=bookmark,
+                    score=bookmark_result.meta.score,
+                    highlights=BookmarkHighlights(
+                        url=self.get_highlight(bookmark_result.meta.highlight, 'url'),
+                        title=self.get_highlight(bookmark_result.meta.highlight, 'title'),
+                        description=self.get_highlight(bookmark_result.meta.highlight, 'description'),
+                        text=self.get_highlight(bookmark_result.meta.highlight, 'text'))))
+
+        return bookmark_results
 
     @staticmethod
     def get_highlight(highlight, field):
