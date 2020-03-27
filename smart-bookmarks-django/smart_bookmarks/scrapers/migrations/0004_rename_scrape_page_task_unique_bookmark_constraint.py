@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('scrapers', '0003_add_scrape_page_error_model'),
+        ("scrapers", "0003_add_scrape_page_error_model"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='scrapepagetask',
-            constraint=models.UniqueConstraint(fields=('bookmark',), name='uq_scrape_page_task_bookmark_id'),
+            model_name="scrapepagetask",
+            constraint=models.UniqueConstraint(
+                fields=("bookmark",), name="uq_scrape_page_task_bookmark_id"
+            ),
         ),
     ]

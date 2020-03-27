@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SearchConfig(AppConfig):
-    name = 'smart_bookmarks.search'
+    name = "smart_bookmarks.search"

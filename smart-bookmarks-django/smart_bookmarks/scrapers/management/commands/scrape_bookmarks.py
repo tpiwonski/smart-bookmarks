@@ -5,7 +5,7 @@ from smart_bookmarks.scrapers.models import ScrapePageTask
 
 
 class Command(BaseCommand):
-    help = 'Scrape bookmarks'
+    help = "Scrape bookmarks"
 
     def handle(self, *args, **options):
         scrape_service = get_scrape_page_service()

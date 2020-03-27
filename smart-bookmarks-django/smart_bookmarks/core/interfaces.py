@@ -6,7 +6,6 @@ from smart_bookmarks.core.models import Bookmark, Page
 
 
 class CreateBookmarkInterface(abc.ABC):
-
     @abc.abstractmethod
     def create_bookmark(self, url: str) -> Bookmark:
         """TODO"""
@@ -21,21 +20,18 @@ class PageData:
 
 
 class CreatePageInterface(abc.ABC):
-
     @abc.abstractmethod
     def create_page(self, bookmark: Bookmark, page_data: PageData) -> Page:
         """TODO"""
 
 
 class ScrapePageInterface(abc.ABC):
-
     @abc.abstractmethod
     def scrape_page_async(self, bookmark: Bookmark):
         """TODO"""
 
 
 class IndexBookmarkInterface(abc.ABC):
-
     @abc.abstractmethod
     def index_bookmark_async(self, bookmark: Bookmark):
         """TODO"""
@@ -65,14 +61,12 @@ class BookmarkResult:
 
 
 class SearchBookmarkInterface(abc.ABC):
-
     @abc.abstractmethod
     def search_bookmarks(self, query: str, operator: str) -> List[BookmarkResult]:
         """TODO"""
 
 
 class ImportBookmarkInterface(abc.ABC):
-
     @abc.abstractmethod
     def import_file(self, file_path: str):
         """TODO"""

@@ -2,8 +2,14 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
-from smart_bookmarks.core.interfaces import ScrapePageInterface, IndexBookmarkInterface, SearchBookmarkInterface, \
-    CreateBookmarkInterface, CreatePageInterface, ImportBookmarkInterface
+from smart_bookmarks.core.interfaces import (
+    CreateBookmarkInterface,
+    CreatePageInterface,
+    ImportBookmarkInterface,
+    IndexBookmarkInterface,
+    ScrapePageInterface,
+    SearchBookmarkInterface,
+)
 
 
 def service_instance(service_path):

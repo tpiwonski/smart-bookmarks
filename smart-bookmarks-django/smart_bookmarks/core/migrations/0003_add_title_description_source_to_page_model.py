@@ -6,23 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_add_page_model'),
+        ("core", "0002_add_page_model"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='page',
-            name='description',
+            model_name="page",
+            name="description",
             field=models.CharField(blank=True, max_length=1024),
         ),
         migrations.AddField(
-            model_name='page',
-            name='source',
-            field=models.TextField(blank=True),
+            model_name="page", name="source", field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='page',
-            name='title',
+            model_name="page",
+            name="title",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]

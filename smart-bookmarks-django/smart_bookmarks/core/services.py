@@ -2,7 +2,11 @@ from django.db import transaction
 
 from smart_bookmarks.core.interfaces import CreateBookmarkInterface, CreatePageInterface
 from smart_bookmarks.core.models import Bookmark, Page
-from smart_bookmarks.core.registry import get_scrape_page_service, get_index_bookmark_service, inject
+from smart_bookmarks.core.registry import (
+    get_index_bookmark_service,
+    get_scrape_page_service,
+    inject,
+)
 from smart_bookmarks.core.utils import url_guid
 
 
@@ -32,11 +36,15 @@ class PageService(CreatePageInterface):
             page.description = page_data.description
             page.text = page_data.text
             page.source = page_data.source
-            page.save(update_fields=['title', 'description', 'text', 'source'])
+            page.save(update_fields=["title", "description", "text", "source"])
         else:
             page = Page.objects.create(
-                bookmark=bookmark, title=page_data.title, description=page_data.description, text=page_data.text,
-                source=page_data.source)
+                bookmark=bookmark,
+                title=page_data.title,
+                description=page_data.description,
+                text=page_data.text,
+                source=page_data.source,
+            )
 
         self.index_page_service.index_bookmark_async(bookmark)
         return page

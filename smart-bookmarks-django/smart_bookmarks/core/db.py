@@ -1,9 +1,8 @@
 from django.db import models
-from django.db.models import Q, F
+from django.db.models import F, Q
 
 
 class BookmarkManager(models.Manager):
-
     def by_id(self, bookmark_id):
         try:
             return self.get_queryset().get(id=bookmark_id)
@@ -23,14 +22,13 @@ class BookmarkManager(models.Manager):
         return self.get_queryset().filter(guid=bookmark_guid).exists()
 
     def list_all(self):
-        return self.get_queryset().all().select_related('_page')
+        return self.get_queryset().all().select_related("_page")
 
     def delete_by_guid(self, bookmark_guid):
         return self.get_queryset().filter(guid=bookmark_guid).delete()
 
 
 class PageManager(models.Manager):
-
     def by_id(self, page_id):
         return self.get_queryset().get(id=page_id)
 

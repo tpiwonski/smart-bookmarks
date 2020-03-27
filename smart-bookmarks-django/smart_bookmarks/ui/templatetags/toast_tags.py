@@ -5,8 +5,8 @@ from django import template
 register = template.Library()
 
 
-TOAST_INFO = 'info'
-TOAST_ERROR = 'error'
+TOAST_INFO = "info"
+TOAST_ERROR = "error"
 
 
 @dataclass
@@ -25,8 +25,6 @@ class ToastError(Toast):
     type: str = TOAST_ERROR
 
 
-@register.inclusion_tag('ui/templatetags/toast.html')
+@register.inclusion_tag("ui/templatetags/toast.html")
 def toast(toast_data):
-    return {
-        'toast': toast_data
-    }
+    return {"toast": toast_data}

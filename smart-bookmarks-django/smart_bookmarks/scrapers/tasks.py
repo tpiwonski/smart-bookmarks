@@ -1,6 +1,6 @@
 import logging
 
-from celery import shared_task, Task
+from celery import Task, shared_task
 
 from smart_bookmarks.scrapers import models
 from smart_bookmarks.scrapers.services import ScrapePageService

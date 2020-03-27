@@ -10,7 +10,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ImportBookmarkService(ImportBookmarkInterface):
-
     def __init__(self, bookmark_service=get_bookmark_service):
         self._import_bookmark_service = NetscapeBookmarkImportService()
         self._bookmark_service = bookmark_service()

@@ -15,20 +15,23 @@ class Bookmark(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['guid'], name='uq_bookmark_quid')]
-        db_table = 'bookmark'
+            models.UniqueConstraint(fields=["guid"], name="uq_bookmark_quid")
+        ]
+        db_table = "bookmark"
 
     def __str__(self):
         return f"Bookmark#{self.id}:url={self.url}"
 
     @property
     def page(self):
-        return getattr(self, '_page', None)
+        return getattr(self, "_page", None)
 
 
 class Page(models.Model):
     id = models.AutoField(primary_key=True)
-    bookmark = models.OneToOneField(Bookmark, on_delete=models.CASCADE, related_name='_page')
+    bookmark = models.OneToOneField(
+        Bookmark, on_delete=models.CASCADE, related_name="_page"
+    )
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1024)
     text = models.TextField()
@@ -39,7 +42,7 @@ class Page(models.Model):
     objects = PageManager()
 
     class Meta:
-        db_table = 'page'
+        db_table = "page"
 
     def __str__(self):
         return f"Page#{self.id}:bookmark={self.bookmark}"
