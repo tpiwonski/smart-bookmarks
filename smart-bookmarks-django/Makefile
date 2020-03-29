@@ -1,3 +1,5 @@
+UI_DIR = smart_bookmarks/ui/
+
 build:
 	docker-compose build
 up:
@@ -22,3 +24,13 @@ start-es:
 	docker-compose up -d elasticsearch-head
 start-app:
 	docker-compose up -d app
+env-frontend:
+	cd $(UI_DIR)frontend && yarn install
+build-frontend:
+	cd $(UI_DIR)frontend && npx webpack
+build-ui: build-frontend
+	python manage.py collectstatic
+clean-ui:
+	rm -rf $(UI_DIR)frontend/node_modules/
+	rm -rf $(UI_DIR)static/dist/
+	rm -rf $(UI_DIR)static_root/

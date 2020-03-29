@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from smart_bookmarks.core.interfaces import CreateBookmarkInterface, ScrapePageInterface
 from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import (
@@ -25,8 +27,10 @@ class BookmarkController:
     def get_bookmark(self, bookmark_guid):
         return {"bookmark": Bookmark.objects.by_guid(bookmark_guid)}
 
-    def list_bookmarks(self):
-        return {"bookmarks": Bookmark.objects.list_all()}
+    def list_bookmarks(self, page_number=1):
+        bookmarks = Bookmark.objects.list_all()
+        paginator = Paginator(bookmarks, 25)
+        return {"bookmarks": paginator.get_page(page_number)}
 
     def scrape_bookmark(self, bookmark_guid):
         bookmark = Bookmark.objects.by_guid(bookmark_guid)
