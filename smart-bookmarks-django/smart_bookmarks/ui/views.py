@@ -27,8 +27,9 @@ def show_bookmark(request, bookmark_guid):
 
 
 def list_bookmarks(request):
+    page_number = request.GET.get('page', 1)
     return render(
-        request, "ui/views/list_bookmarks.html", BookmarkController().list_bookmarks()
+        request, "ui/views/list_bookmarks.html", BookmarkController().list_bookmarks(page_number)
     )
 
 
