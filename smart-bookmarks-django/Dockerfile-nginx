@@ -2,7 +2,7 @@ FROM node:13.8 as FRONTEND_BUILDER
 WORKDIR /app
 COPY ./smart_bookmarks/ui/frontend/ ./
 RUN yarn install
-RUN npx webpack
+RUN yarn webpack
 
 FROM python:3.7 as UI_BUILDER
 WORKDIR /app
