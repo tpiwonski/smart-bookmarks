@@ -8,14 +8,14 @@ from smart_bookmarks.core.interfaces import (
     BookmarkResult,
     IndexBookmarkInterface,
     SearchBookmarkInterface,
+    SearchResults,
 )
-from smart_bookmarks.core.models import Bookmark, Page
+from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import inject
 from smart_bookmarks.search.elasticsearch import BookmarkData, ElasticsearchService
 from smart_bookmarks.search.models import IndexBookmarkTask
 
 LOGGER = logging.getLogger(__name__)
-
 
 OPERATOR_AND = "and"
 OPERATOR_OR = "or"
@@ -70,36 +70,42 @@ class SearchBookmarkService(SearchBookmarkInterface):
         lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST)
     )
 
-    def search_bookmarks(self, query, operator):
-        search_results = self.search_bookmark_service.search_bookmark(query, operator)
+    def search_bookmarks(self, query, operator, offset=None, limit=None):
+        search_results = self.search_bookmark_service.search_bookmark(
+            query, operator, offset=offset, limit=limit
+        )
+
+        total_hits = search_results["hits"]["total"]["value"]
+        max_score = search_results["hits"]["max_score"]
+
         bookmark_results = []
-        for bookmark_result in search_results:
-            bookmark = Bookmark.objects.by_id(bookmark_result.meta.id)
+        for bookmark_result in search_results["hits"]["hits"]:
+
+            score = bookmark_result["_score"]
+            bookmark_id = bookmark_result["_id"]
+            highlight = bookmark_result["highlight"]
+            highlight_url = highlight.get("url")
+            highlight_title = highlight.get("title")
+            highlight_description = highlight.get("description")
+            highlight_text = highlight.get("text")
+
+            bookmark = Bookmark.objects.by_id(bookmark_id)
             if not bookmark:
                 continue
 
             bookmark_results.append(
                 BookmarkResult(
                     bookmark=bookmark,
-                    score=bookmark_result.meta.score,
+                    score=score,
                     highlights=BookmarkHighlights(
-                        url=self.get_highlight(bookmark_result.meta.highlight, "url"),
-                        title=self.get_highlight(
-                            bookmark_result.meta.highlight, "title"
-                        ),
-                        description=self.get_highlight(
-                            bookmark_result.meta.highlight, "description"
-                        ),
-                        text=self.get_highlight(bookmark_result.meta.highlight, "text"),
+                        url=highlight_url,
+                        title=highlight_title,
+                        description=highlight_description,
+                        text=highlight_text,
                     ),
                 )
             )
 
-        return bookmark_results
-
-    @staticmethod
-    def get_highlight(highlight, field):
-        try:
-            return highlight[field]
-        except KeyError:
-            return []
+        return SearchResults(
+            total_hits=total_hits, max_score=max_score, results=bookmark_results
+        )
