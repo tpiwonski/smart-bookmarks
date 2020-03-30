@@ -27,7 +27,7 @@ start-app:
 env-frontend:
 	cd $(UI_DIR)frontend && yarn install
 build-frontend:
-	cd $(UI_DIR)frontend && npx webpack
+	cd $(UI_DIR)frontend && yarn webpack
 build-ui: build-frontend
 	python manage.py collectstatic
 clean-ui:
