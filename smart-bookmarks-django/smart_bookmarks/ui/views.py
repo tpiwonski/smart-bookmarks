@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 
 from smart_bookmarks.ui.controllers import BookmarkController, SearchController
 from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
+from smart_bookmarks.ui.utils import ViewInfo
 
 
 def add_bookmark(request):
@@ -27,22 +28,40 @@ def show_bookmark(request, bookmark_guid):
 
 
 def list_bookmarks(request):
-    page_number = request.GET.get('page', 1)
+    page_number = request.GET.get("page", 1)
+    context = {
+        **BookmarkController().list_bookmarks(page_number),
+        **{
+            "view": ViewInfo("list-bookmarks")
+        }
+    }
     return render(
-        request, "ui/views/list_bookmarks.html", BookmarkController().list_bookmarks(page_number)
+        request,
+        "ui/views/list_bookmarks.html",
+        context
     )
 
 
 def search_bookmarks(request):
-    # if request.method == 'POST':
+    page_number = request.GET.get("page", 1)
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
+        query = form.cleaned_data["q"]
+        operator = form.cleaned_data["op"]
+        context = {
+            **SearchController().search_bookmarks(
+                query=query,
+                operator=operator,
+                page_number=int(page_number),
+            ),
+            **{
+                "search_view": ViewInfo("search-bookmarks", query={"q": query, "op": operator})
+            }
+        }
         return render(
             request,
             "ui/views/search_bookmarks_results.html",
-            SearchController().search_bookmarks(
-                query=form.cleaned_data["q"], operator=form.cleaned_data["op"]
-            ),
+            context,
         )
 
     else:

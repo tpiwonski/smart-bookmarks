@@ -1,5 +1,6 @@
 {% extends "ui/base.html" %}
 {% load bookmark_tags %}
+{% load pagination_tags %}
 {% block body %}
 <ul class="list-group">
     {% for bookmark in bookmarks %}
@@ -8,5 +9,5 @@
     </li>
     {% endfor %}
 </ul>
-{% include "ui/fragments/pagination.html" with page_obj=bookmarks %}
+{% pagination bookmarks view %}
 {% endblock %}
