@@ -24,7 +24,7 @@ start-es:
 	docker-compose up -d elasticsearch-head
 start-app:
 	docker-compose up -d app
-env-frontend:
+setup-frontend:
 	cd $(UI_DIR)frontend && yarn install
 build-frontend:
 	cd $(UI_DIR)frontend && yarn webpack

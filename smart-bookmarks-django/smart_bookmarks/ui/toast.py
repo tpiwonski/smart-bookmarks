@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 
-from django import template
-
-register = template.Library()
-
+from django.contrib import messages
 
 TOAST_INFO = "info"
 TOAST_ERROR = "error"
@@ -25,6 +22,17 @@ class ToastError(Toast):
     type: str = TOAST_ERROR
 
 
-@register.inclusion_tag("ui/templatetags/toast.html")
-def toast(toast_data):
-    return {"toast": toast_data}
+@dataclass
+class Message:
+    message: str
+    level: str
+
+
+@dataclass
+class ErrorMessage(Message):
+    level: str = messages.ERROR
+
+
+@dataclass
+class InfoMessage(Message):
+    level: str = messages.INFO

@@ -1,0 +1,10 @@
+{#<div>#}
+{#{% if toasts %}#}
+{#{% include "toast/toast_list.html" with toasts=toasts %}#}
+{#{% endif %}#}
+{#{% if fragments %}#}
+{#{% for fragment in fragments %}#}
+{#{{ fragment|safe }}#}
+{#{% endfor %}#}
+{#{% endif %}#}
+{#</div>#}

@@ -1,0 +1,11 @@
+<div id="toasts">
+{% if messages %}
+    {% for message in messages %}
+    {% include "toast/message.html" with toast=message %}
+    {% endfor %}
+{% endif %}
+
+{#    {% for toast in toasts %}#}
+{#    {% include "toast/toast.html" with toast=toast %}#}
+{#    {% endfor %}#}
+</div>
