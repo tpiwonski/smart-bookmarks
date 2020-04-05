@@ -53,11 +53,18 @@ class BookmarkHighlights:
     text: List[str]
 
 
-@dataclass
-class BookmarkResult:
-    bookmark: Bookmark
+# @dataclass
+# class SearchResult:
+#     score: float
+#     highlights: BookmarkHighlights
+
+
+class BookmarkResult(Bookmark):
     score: float
     highlights: BookmarkHighlights
+
+    class Meta:
+        proxy = True
 
 
 @dataclass

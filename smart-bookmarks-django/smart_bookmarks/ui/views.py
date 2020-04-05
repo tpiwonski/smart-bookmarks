@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
 
-from smart_bookmarks.ui.controllers import BookmarkController, SearchController
+from smart_bookmarks.ui.controllers import BookmarkController
 from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
-from smart_bookmarks.ui.utils import ViewInfo
+from smart_bookmarks.ui.templatetags.pagination import pagination_ctx
+from smart_bookmarks.ui.utils import ctx
 
 
 def add_bookmark(request):
@@ -16,56 +17,35 @@ def add_bookmark(request):
         form = AddBookmarkForm()
 
     context = {"form": form}
-    return render(request, "ui/views/add_bookmark.html", context)
+    return render(request, "bookmark/add_bookmark.html", context)
 
 
 def show_bookmark(request, bookmark_guid):
     return render(
         request,
-        "ui/views/show_bookmark.html",
+        "bookmark/show_bookmark.html",
         BookmarkController().get_bookmark(bookmark_guid),
     )
 
 
 def list_bookmarks(request):
     page_number = request.GET.get("page", 1)
-    context = {
-        **BookmarkController().list_bookmarks(page_number),
-        **{
-            "view": ViewInfo("list-bookmarks")
-        }
-    }
-    return render(
-        request,
-        "ui/views/list_bookmarks.html",
-        context
-    )
 
-
-def search_bookmarks(request):
-    page_number = request.GET.get("page", 1)
     form = SearchBookmarksForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data["q"]
         operator = form.cleaned_data["op"]
-        context = {
-            **SearchController().search_bookmarks(
-                query=query,
-                operator=operator,
-                page_number=int(page_number),
-            ),
-            **{
-                "search_view": ViewInfo("search-bookmarks", query={"q": query, "op": operator})
-            }
-        }
-        return render(
-            request,
-            "ui/views/search_bookmarks_results.html",
-            context,
+        bookmarks = BookmarkController().list_bookmarks(
+            query=query, operator=operator, page_number=int(page_number),
         )
-
+        context = ctx(
+            dict(form=form),
+            bookmarks,
+            pagination_ctx("list-bookmarks", query={"q": query, "op": operator}),
+        )
+        return render(request, "bookmark/list_bookmarks.html", context,)
     else:
         form = SearchBookmarksForm()
 
     context = {"form": form}
-    return render(request, "ui/views/search_bookmarks.html", context)
+    return render(request, "bookmark/list_bookmarks.html", context)

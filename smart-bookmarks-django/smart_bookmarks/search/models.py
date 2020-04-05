@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
 
+from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.search.db import IndexBookmarkTaskManager
 
 

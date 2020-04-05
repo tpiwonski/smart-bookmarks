@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import models
 from django.db.models import F, Q
 
@@ -8,6 +10,9 @@ class BookmarkManager(models.Manager):
             return self.get_queryset().get(id=bookmark_id)
         except self.model.DoesNotExist:
             return None
+
+    def by_ids(self, bookmark_ids: List[int]):
+        return self.get_queryset().filter(id__in=bookmark_ids)
 
     def by_guid(self, bookmark_guid):
         try:

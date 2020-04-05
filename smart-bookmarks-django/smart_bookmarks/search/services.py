@@ -12,6 +12,7 @@ from smart_bookmarks.core.interfaces import (
 )
 from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.core.registry import inject
+from smart_bookmarks.search import models
 from smart_bookmarks.search.elasticsearch import BookmarkData, ElasticsearchService
 from smart_bookmarks.search.models import IndexBookmarkTask
 
@@ -78,7 +79,7 @@ class SearchBookmarkService(SearchBookmarkInterface):
         total_hits = search_results["hits"]["total"]["value"]
         max_score = search_results["hits"]["max_score"]
 
-        bookmark_results = []
+        bookmark_results = {}
         for bookmark_result in search_results["hits"]["hits"]:
 
             score = bookmark_result["_score"]
@@ -89,23 +90,22 @@ class SearchBookmarkService(SearchBookmarkInterface):
             highlight_description = highlight.get("description")
             highlight_text = highlight.get("text")
 
-            bookmark = Bookmark.objects.by_id(bookmark_id)
-            if not bookmark:
-                continue
-
-            bookmark_results.append(
-                BookmarkResult(
-                    bookmark=bookmark,
-                    score=score,
-                    highlights=BookmarkHighlights(
-                        url=highlight_url,
-                        title=highlight_title,
-                        description=highlight_description,
-                        text=highlight_text,
-                    ),
-                )
+            bookmark_results[int(bookmark_id)] = dict(
+                score=score,
+                highlights=BookmarkHighlights(
+                    url=highlight_url,
+                    title=highlight_title,
+                    description=highlight_description,
+                    text=highlight_text,
+                ),
             )
 
+        bookmarks = BookmarkResult.objects.by_ids(bookmark_ids=bookmark_results.keys())
+
+        for bookmark in bookmarks:
+            bookmark.score = bookmark_results[bookmark.id]["score"]
+            bookmark.highlights = bookmark_results[bookmark.id]["highlights"]
+
         return SearchResults(
-            total_hits=total_hits, max_score=max_score, results=bookmark_results
+            total_hits=total_hits, max_score=max_score, results=bookmarks
         )

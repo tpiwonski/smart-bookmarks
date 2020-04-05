@@ -1,6 +1,9 @@
+from typing import List
+
 from django.db import models, transaction
 from django.db.models import F, Q
 
+from smart_bookmarks.core.db import BookmarkManager
 from smart_bookmarks.core.models import Bookmark
 
 

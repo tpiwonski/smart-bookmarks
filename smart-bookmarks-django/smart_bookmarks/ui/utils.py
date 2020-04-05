@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import Dict, List
 
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -20,9 +20,9 @@ def reverse_querystring(
     return base_url
 
 
-@dataclass
-class ViewInfo:
-    viewname: str
-    args: List[any] = None
-    kwargs: Dict[str, any] = None
-    query: Dict[str, any] = None
+def ctx(*args):
+    context = {}
+    for c in args:
+        context.update(c)
+
+    return context
