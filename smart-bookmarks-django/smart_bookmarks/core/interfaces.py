@@ -84,6 +84,10 @@ class SearchBookmarkInterface(abc.ABC):
     ) -> SearchResults:
         """TODO"""
 
+    @abc.abstractmethod
+    def search(self, query: str, operator: str, per_page: int) -> SearchResults:
+        """TODO"""
+
 
 class ImportBookmarkInterface(abc.ABC):
     @abc.abstractmethod

@@ -1,5 +1,6 @@
 import logging
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 import requests
 from selenium import webdriver
@@ -100,8 +101,15 @@ class SeleniumScrapePageService:
 
         title = self._web_driver.title
         source = self._web_driver.page_source
-        html_tag = self._web_driver.find_element_by_tag_name("html")
-        text = html_tag.text
+
+        result = urlparse(url)
+        LOGGER.info(f"NETLOC: {result.netloc}")
+        boo = foo.get(
+            result.netloc,
+            lambda web_driver: web_driver.find_element_by_tag_name("html").text,
+        )
+        text = boo(self._web_driver)
+
         if not text:
             raise ScrapeError(f"No text available for page")
 
@@ -115,3 +123,13 @@ class SeleniumScrapePageService:
             description = description_tag.get_attribute("content")
 
         return PageData(title=title, description=description, text=text, source=source)
+
+
+foo = {
+    "hackernoon.com": lambda web_driver: web_driver.find_element_by_tag_name(
+        "main"
+    ).text,
+    "stackoverflow.com": lambda web_driver: web_driver.find_element_by_id(
+        "mainbar"
+    ).text,
+}

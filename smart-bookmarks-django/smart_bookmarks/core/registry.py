@@ -18,7 +18,7 @@ def service_instance(service_path):
 
 
 def inject(service_factory):
-    return cached_property(lambda _: service_factory())
+    return cached_property(lambda: service_factory())
 
 
 def get_bookmark_service() -> CreateBookmarkInterface:

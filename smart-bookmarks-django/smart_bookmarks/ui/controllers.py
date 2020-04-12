@@ -16,7 +16,7 @@ from smart_bookmarks.core.utils import url_guid
 from smart_bookmarks.search.services import OPERATOR_AND
 from smart_bookmarks.ui.toast import ErrorMessage, InfoMessage
 
-PAGE_SIZE = 3
+PAGE_SIZE = 10
 
 
 class BookmarkController:
@@ -37,19 +37,22 @@ class BookmarkController:
 
     def list_bookmarks(self, query=None, operator=OPERATOR_AND, page_number=1):
         if query:
-            offset = None if page_number == 1 else (page_number - 1) * PAGE_SIZE
-            bookmarks = self.search_service.search_bookmarks(
-                query, operator, offset, PAGE_SIZE
-            )
-            bookmarks = Page(
-                object_list=bookmarks.results,
-                number=page_number,
-                paginator=Paginator(object_list=bookmarks, per_page=PAGE_SIZE),
-            )
+            # offset = None if page_number == 1 else (page_number - 1) * PAGE_SIZE
+            # bookmarks = self.search_service.search_bookmarks(
+            #     query, operator, offset, PAGE_SIZE
+            # )
+            # bookmarks = Page(
+            #     object_list=bookmarks.results,
+            #     number=page_number,
+            #     paginator=Paginator(object_list=bookmarks, per_page=PAGE_SIZE),
+            # )
+            bookmarks = self.search_service.search(query, operator, PAGE_SIZE).results
+
         else:
             bookmarks = Bookmark.objects.list_all()
-            paginator = Paginator(bookmarks, PAGE_SIZE)
-            bookmarks = paginator.get_page(page_number)
+
+        paginator = Paginator(bookmarks, PAGE_SIZE)
+        bookmarks = paginator.get_page(page_number)
 
         return {"bookmarks": bookmarks}
 
