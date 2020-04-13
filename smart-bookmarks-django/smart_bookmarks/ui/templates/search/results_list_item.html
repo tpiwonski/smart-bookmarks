@@ -1,0 +1,13 @@
+{% extends "bookmark/bookmark_list_item.html" %}
+{% block item %}
+{{ block.super }}
+{% if bookmark.score %}
+  <span>Score: {{ bookmark.score }}</span>
+{% endif %}
+{% if bookmark.highlights %}
+  {% include "search/result_highlights.html" with highlights=bookmark.highlights.url %}
+  {% include "search/result_highlights.html" with highlights=bookmark.highlights.title %}
+  {% include "search/result_highlights.html" with highlights=bookmark.highlights.description %}
+  {% include "search/result_highlights.html" with highlights=bookmark.highlights.text %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% if bookmarks %}
+  {% include "pagination/pagination.html" with page=bookmarks %}
+  <ul>
+    {% for bookmark in bookmarks %}
+      {% block item %}
+      {% include "bookmark/bookmark_list_item.html" with bookmark=bookmark %}
+      {% endblock %}
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div>
+    {% block empty %}
+      No results found
+    {% endblock %}
+  </div>
+{% endif %}
