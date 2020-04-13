@@ -1,0 +1,4 @@
+{% extends "bookmark/bookmark_list.html" %}
+{% block item %}
+{% include "search/results_list_item.html" with bookmark=bookmark %}
+{% endblock %}

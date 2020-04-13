@@ -53,12 +53,6 @@ class BookmarkHighlights:
     text: List[str]
 
 
-# @dataclass
-# class SearchResult:
-#     score: float
-#     highlights: BookmarkHighlights
-
-
 class BookmarkResult(Bookmark):
     score: float
     highlights: BookmarkHighlights
@@ -67,25 +61,11 @@ class BookmarkResult(Bookmark):
         proxy = True
 
 
-@dataclass
-class SearchResults:
-    total_hits: int
-    max_score: float
-    results: List[BookmarkResult]
-
-    def count(self):
-        return self.total_hits
-
-
 class SearchBookmarkInterface(abc.ABC):
     @abc.abstractmethod
-    def search_bookmarks(
-        self, query: str, operator: str, offset: Optional[int], limit: Optional[int]
-    ) -> SearchResults:
-        """TODO"""
-
-    @abc.abstractmethod
-    def search(self, query: str, operator: str, per_page: int) -> SearchResults:
+    def search(
+        self, query: str, operator: str, page_number: int, per_page: int
+    ) -> List[BookmarkResult]:
         """TODO"""
 
 

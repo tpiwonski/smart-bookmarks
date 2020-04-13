@@ -16,7 +16,8 @@ class SearchBookmarksForm(forms.Form):
 
     def __init__(self, data=None, *args, **kwargs):
         values = {"op": OPERATOR_AND}
-        values.update({k: v for k, v in data.items()})
+        if data:
+            values.update({k: v for k, v in data.items()})
 
         super().__init__(values, *args, **kwargs)
         self.initial["op"] = OPERATOR_AND
@@ -24,3 +25,9 @@ class SearchBookmarksForm(forms.Form):
     def clean_op(self):
         op = self.cleaned_data["op"]
         return op if op else OPERATOR_AND
+
+    def get_query(self):
+        return self.cleaned_data["q"]
+
+    def get_operator(self):
+        return self.cleaned_data["op"]
