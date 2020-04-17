@@ -20,6 +20,7 @@ from smart_bookmarks.ui import views
 
 urlpatterns = [
     path("bookmarks/", include("smart_bookmarks.ui.urls")),
+    path("api/", include("smart_bookmarks.api.urls")),
     path("admin/", admin.site.urls),
     path("", views.add_bookmark),
 ]

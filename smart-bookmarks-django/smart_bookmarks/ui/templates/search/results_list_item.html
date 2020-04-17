@@ -1,13 +1,15 @@
 {% extends "bookmark/bookmark_list_item.html" %}
 {% block item %}
+{% with bookmark=result.bookmark %}
 {{ block.super }}
-{% if bookmark.score %}
-  <span>Score: {{ bookmark.score }}</span>
+{% endwith %}
+{% if result.score %}
+  <span>Score: {{ result.score }}</span>
 {% endif %}
-{% if bookmark.highlights %}
-  {% include "search/result_highlights.html" with highlights=bookmark.highlights.url %}
-  {% include "search/result_highlights.html" with highlights=bookmark.highlights.title %}
-  {% include "search/result_highlights.html" with highlights=bookmark.highlights.description %}
-  {% include "search/result_highlights.html" with highlights=bookmark.highlights.text %}
+{% if result.highlights %}
+  {% include "search/result_highlights.html" with highlights=result.highlights.url %}
+  {% include "search/result_highlights.html" with highlights=result.highlights.title %}
+  {% include "search/result_highlights.html" with highlights=result.highlights.description %}
+  {% include "search/result_highlights.html" with highlights=result.highlights.text %}
 {% endif %}
 {% endblock %}

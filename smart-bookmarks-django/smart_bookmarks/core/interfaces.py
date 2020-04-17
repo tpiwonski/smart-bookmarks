@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 from smart_bookmarks.core.models import Bookmark, Page
 
@@ -46,26 +46,32 @@ class IndexBookmarkInterface(abc.ABC):
 
 
 @dataclass
-class BookmarkHighlights:
-    url: List[str]
-    title: List[str]
-    description: List[str]
-    text: List[str]
+class BookmarkSearchHighlights:
+    url: List[str] = None
+    title: List[str] = None
+    description: List[str] = None
+    text: List[str] = None
 
 
-class BookmarkResult(Bookmark):
-    score: float
-    highlights: BookmarkHighlights
+@dataclass
+class BookmarkSearchResult:
+    score: float = None
+    highlights: BookmarkSearchHighlights = None
+    bookmark: Bookmark = None
 
-    class Meta:
-        proxy = True
+
+@dataclass
+class BookmarkSearchResults:
+    total_results: int = None
+    max_score: float = None
+    results: List[BookmarkSearchResult] = None
 
 
 class SearchBookmarkInterface(abc.ABC):
     @abc.abstractmethod
     def search(
         self, query: str, operator: str, page_number: int, per_page: int
-    ) -> List[BookmarkResult]:
+    ) -> BookmarkSearchResults:
         """TODO"""
 
 

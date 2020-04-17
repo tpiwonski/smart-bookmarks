@@ -19,6 +19,7 @@ django-widget-tweaks = "1.4.5"
 beautifulsoup4 = "4.8.2"
 requests = "2.23.0"
 elasticsearch = ">=7.0.0,<8.0.0"
+djangorestframework = "3.11.0"
 
 [tool.poetry.dev-dependencies]
 isort = "^4.3.21"

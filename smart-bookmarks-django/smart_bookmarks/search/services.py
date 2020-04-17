@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import List
 
@@ -6,8 +7,9 @@ from django.conf import settings
 from django.utils.timezone import now
 
 from smart_bookmarks.core.interfaces import (
-    BookmarkHighlights,
-    BookmarkResult,
+    BookmarkSearchHighlights,
+    BookmarkSearchResult,
+    BookmarkSearchResults,
     IndexBookmarkInterface,
     SearchBookmarkInterface,
 )
@@ -71,22 +73,20 @@ class SearchQuery:
         self.operator = operator
 
 
-class SearchQuerySet:
+class SearchQuerySet(Sequence):
     def __init__(self, service, query: SearchQuery, page_number: int, per_page: int):
         self.service = service
         self.query = query
         self.page_number = page_number
         self.per_page = per_page
-        self.total_hits = None
+        self.total_results = None
         self.max_score = None
         self.cached_results = {}
 
-    def count(self):
-        if self.total_hits is not None:
-            return self.total_hits
-
         self.load((self.page_number - 1) * self.per_page, self.per_page)
-        return self.total_hits
+
+    def __len__(self):
+        return self.total_results
 
     def __getitem__(self, item):
         if isinstance(item, slice):
@@ -99,6 +99,10 @@ class SearchQuerySet:
         results = self.load(item, self.per_page)
         return results[0]
 
+    @property
+    def results(self):
+        return self.load((self.page_number - 1) * self.per_page, self.per_page)
+
     def load(self, offset, length):
         if length == 0:
             return []
@@ -109,18 +113,18 @@ class SearchQuerySet:
 
         results = self.service.search_q(query=self.query, offset=offset, length=length,)
 
-        self.total_hits = results.total_hits
+        self.total_results = results.total_results
         self.max_score = results.max_score
         self.cached_results[(offset, len(results.results))] = results.results
 
         return results.results
 
 
-@dataclass
-class SearchResults:
-    total_hits: int
-    max_score: float
-    results: List[BookmarkResult]
+# @dataclass
+# class SearchResults:
+#     total_hits: int
+#     max_score: float
+#     results: List[BookmarkResult]
 
 
 class SearchBookmarkService(SearchBookmarkInterface):
@@ -129,10 +133,12 @@ class SearchBookmarkService(SearchBookmarkInterface):
         lambda: ElasticsearchService(settings.ELASTICSEARCH_HOST)
     )
 
-    def search(self, query: str, operator: str, page_number: int, per_page: int):
+    def search(
+        self, query: str, operator: str, page_number: int, per_page: int
+    ) -> SearchQuerySet:
         return SearchQuerySet(self, SearchQuery(query, operator), page_number, per_page)
 
-    def search_q(self, query, offset: int, length: int):
+    def search_q(self, query, offset: int, length: int) -> BookmarkSearchResults:
         search_results = self.search_bookmark_service.search_bookmark(
             query.query, query.operator, offset=offset, limit=length
         )
@@ -150,9 +156,9 @@ class SearchBookmarkService(SearchBookmarkInterface):
             highlight_description = highlight.get("description")
             highlight_text = highlight.get("text")
 
-            bookmark_results[int(bookmark_id)] = dict(
+            bookmark_results[int(bookmark_id)] = BookmarkSearchResult(
                 score=score,
-                highlights=BookmarkHighlights(
+                highlights=BookmarkSearchHighlights(
                     url=highlight_url,
                     title=highlight_title,
                     description=highlight_description,
@@ -160,12 +166,17 @@ class SearchBookmarkService(SearchBookmarkInterface):
                 ),
             )
 
-        bookmarks = BookmarkResult.objects.by_ids(bookmark_ids=bookmark_results.keys())
+        bookmarks = Bookmark.objects.by_ids(bookmark_ids=bookmark_results.keys())
 
+        results = []
         for bookmark in bookmarks:
-            bookmark.score = bookmark_results[bookmark.id]["score"]
-            bookmark.highlights = bookmark_results[bookmark.id]["highlights"]
+            # bookmark.score = bookmark_results[bookmark.id]["score"]
+            # bookmark.highlights = bookmark_results[bookmark.id]["highlights"]
 
-        return SearchResults(
-            total_hits=total_hits, max_score=max_score, results=bookmarks
+            result = bookmark_results[bookmark.id]
+            result.bookmark = bookmark
+            results.append(result)
+
+        return BookmarkSearchResults(
+            total_results=total_hits, max_score=max_score, results=results
         )
