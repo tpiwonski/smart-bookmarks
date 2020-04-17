@@ -1,4 +1,14 @@
-{% extends "bookmark/bookmark_list.html" %}
-{% block item %}
-{% include "search/results_list_item.html" with bookmark=bookmark %}
-{% endblock %}
+{% if results %}
+  {% include "pagination/pagination.html" with page=results %}
+  <ul>
+    {% for result in results %}
+      {% include "search/results_list_item.html" with result=result %}
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div>
+    {% block empty %}
+      No results found
+    {% endblock %}
+  </div>
+{% endif %}

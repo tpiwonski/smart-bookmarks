@@ -43,12 +43,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "smart_bookmarks.core",
     "smart_bookmarks.authentication",
     "smart_bookmarks.scrapers",
     "smart_bookmarks.search",
     "smart_bookmarks.ui",
     "smart_bookmarks.importers",
+    "smart_bookmarks.api",
 ]
 
 MIDDLEWARE = [

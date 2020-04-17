@@ -45,7 +45,7 @@ class BookmarkController:
         bookmarks = self.search_service.search(query, operator, page_number, PAGE_SIZE)
         paginator = Paginator(bookmarks, PAGE_SIZE)
         bookmarks = paginator.get_page(page_number)
-        return {"bookmarks": bookmarks}
+        return {"results": bookmarks}
 
     def scrape_bookmark(self, bookmark_guid):
         bookmark = Bookmark.objects.by_guid(bookmark_guid)

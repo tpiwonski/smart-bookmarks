@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
 
+from smart_bookmarks.core.interfaces import BookmarkSearchResult
 from smart_bookmarks.core.models import Bookmark
 from smart_bookmarks.search.db import IndexBookmarkTaskManager
 
@@ -21,3 +22,9 @@ class IndexBookmarkTask(models.Model):
                 fields=["bookmark"], name="uq_index_bookmark_task_bookmark_id"
             )
         ]
+
+
+# class BookmarkResult(Bookmark, BookmarkSearchResult):
+#
+#     class Meta:
+#         proxy = True
