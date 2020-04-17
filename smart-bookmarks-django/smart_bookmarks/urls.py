@@ -13,7 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
 from smart_bookmarks.ui import views
@@ -22,5 +24,9 @@ urlpatterns = [
     path("bookmarks/", include("smart_bookmarks.ui.urls")),
     path("api/", include("smart_bookmarks.api.urls")),
     path("admin/", admin.site.urls),
+    # path('accounts/', include('django_registration.backends.one_step.urls')),
+    url(r"^accounts/", include("registration.backends.default.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    # url('', include('social_django.urls', namespace='social')),
     path("", views.add_bookmark),
 ]
