@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "registration",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,6 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    # 'social_django',
+    # "django_registration",
     "smart_bookmarks.core",
     "smart_bookmarks.authentication",
     "smart_bookmarks.scrapers",
@@ -76,6 +79,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -220,3 +225,9 @@ SEARCH_BOOKMARK_SERVICE = "smart_bookmarks.search.services.SearchBookmarkService
 IMPORT_BOOKMARK_SERVICE = "smart_bookmarks.importers.services.ImportBookmarkService"
 
 ELASTICSEARCH_HOST = "elasticsearch"
+
+# SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+ACCOUNT_ACTIVATION_DAYS = 1
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

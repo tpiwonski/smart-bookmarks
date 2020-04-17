@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from smart_bookmarks.ui.controllers import BookmarkController
@@ -5,6 +6,7 @@ from smart_bookmarks.ui.forms import AddBookmarkForm, SearchBookmarksForm
 from smart_bookmarks.ui.utils import ctx
 
 
+@login_required
 def add_bookmark(request):
     if request.method == "POST":
         form = AddBookmarkForm(request.POST)
