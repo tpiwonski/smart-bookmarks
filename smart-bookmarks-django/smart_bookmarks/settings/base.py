@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # 'social_django',
     # "django_registration",
+    "widget_tweaks",
     "smart_bookmarks.core",
     "smart_bookmarks.authentication",
     "smart_bookmarks.scrapers",

@@ -1,0 +1,47 @@
+{% load widget_tweaks %}
+{% block form %}
+
+<form action="{{ action }}"
+      method="{% if method %}{{ method }}{% else %}{% block method %}POST{% endblock %}{% endif %}"
+      enctype="{% if enctype %}{{ enctype }}{% else %}application/x-www-form-urlencoded{% endif %}"
+      class="{% if form_class %}{{ form_class }}{% else %}{% block form-class %}{% endblock %}{% endif %}"
+      style="width: 100%">
+
+  {% block csrf %}
+    {% csrf_token %}
+  {% endblock %}
+
+  {% block errors %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+        </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block hidden-fields %}
+    {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+    {% endfor %}
+  {% endblock %}
+
+  {% block fields-and-submit %}
+
+  {% block fields %}
+    {% for field in form %}
+      {% block field %}
+        {% include "form/field.html" with form=form field=field %}
+      {% endblock %}
+    {% endfor %}
+  {% endblock %}
+
+  {% block submit %}
+    <input type="submit" class="btn btn-primary" value="{% if submit %}{{ submit }}{% else %}{% block submit-text %}Submit{% endblock %}{% endif %}">
+  {% endblock %}
+
+  {% endblock %}
+
+</form>
+{% endblock %}

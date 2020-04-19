@@ -1,0 +1,10 @@
+{% load widget_tweaks %}
+<div class="{% if field_group_class %}{{ field_group_class }}{% else %}form-group{% endif %}">
+  {% if field.label %}
+    <label for="{{ field.id_for_label }}" class="{{ field_label_class }}">{{ field.label }}</label>
+  {% endif %}
+  {% render_field field %}
+  {% if field.help_text %}
+   <small class="form-text text-muted">{{ field.help_text }}</small>
+  {% endif %}
+</div>

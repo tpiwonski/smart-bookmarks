@@ -1,6 +1,6 @@
 {% if bookmarks %}
   {% include "pagination/pagination.html" with page=bookmarks %}
-  <ul>
+  <ul class="list-group">
     {% for bookmark in bookmarks %}
       {% block item %}
       {% include "bookmark/bookmark_list_item.html" with bookmark=bookmark %}
