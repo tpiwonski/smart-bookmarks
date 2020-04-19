@@ -1,6 +1,5 @@
 {% if results %}
-  {% include "pagination/pagination.html" with page=results %}
-  <ul>
+  <ul class="list-group">
     {% for result in results %}
       {% include "search/results_list_item.html" with result=result %}
     {% endfor %}

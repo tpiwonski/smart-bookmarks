@@ -8,9 +8,10 @@ class AddBookmarkForm(forms.Form):
 
 
 class SearchBookmarksForm(forms.Form):
-    q = forms.CharField(max_length=1024, required=False)
+    q = forms.CharField(required=False, label="")
     op = forms.ChoiceField(
         choices=[(OPERATOR_AND, OPERATOR_AND), (OPERATOR_OR, OPERATOR_OR)],
+        label="",
         widget=forms.RadioSelect,
     )
 

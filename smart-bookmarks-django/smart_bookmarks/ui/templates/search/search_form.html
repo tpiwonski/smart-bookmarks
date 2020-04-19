@@ -1,4 +1,11 @@
-<form method="get">
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+{% extends "form/form.html" %}
+{% load widget_tweaks %}
+{% block method %}GET{% endblock %}
+{% block csrf %}{% endblock %}
+{% block fields-and-submit %}
+<div class="form-row align-items-center">
+    {% include "form/field.html" with form=form field=form.q|add_class:"form-control" field_group_class="col-7" %}
+    {% include "form/field.html" with form=form field=form.op field_group_class="col-auto radio-inline" %}
+    {% block submit %}{{ block.super }}{% endblock %}
+</div>
+{% endblock %}
